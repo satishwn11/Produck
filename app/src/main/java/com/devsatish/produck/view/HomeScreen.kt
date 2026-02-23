@@ -36,7 +36,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -49,6 +48,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -68,6 +68,7 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
 
     val inter = FontFamily(Font(R.font.inter_medium))
     val titlegreet = FontFamily(Font(R.font.fellgreet))
+    val titlegreet2 = FontFamily(Font(R.font.jacquesfrancoisregular))
 
     var selectedMinutes by remember { mutableIntStateOf(25) }
 
@@ -295,68 +296,76 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                 )
             }
 
+            val groupedList = completedList.groupBy { it.completedDate }
             LazyColumn {
-                items(completedList) { task ->
+                groupedList.forEach { (date, tasks) ->
+                    item {
+                        Text(
+                            text = date,
+                            fontSize = 30.sp,
+                            fontFamily = titlegreet2,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp)
-                            .background(Color(0xFFF5F5F5),
-                                RoundedCornerShape(12.dp))
-                    ) {
+                    items(tasks) { task ->
 
-                        Column (
-                            modifier = Modifier.fillMaxWidth()
-                                .wrapContentHeight()
-                                .shadow(8.dp,
-                                    RoundedCornerShape(12.dp), clip = false)
-                                .background(Color.White, RoundedCornerShape(12.dp))
-                                .padding(12.dp),
-                            verticalArrangement = Arrangement.Center
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp)
+                                .background(Color(0xFFF5F5F5),
+                                    RoundedCornerShape(12.dp))
                         ) {
 
-                            Text(
-                                text = timerViewModel.capitalizeFirst(task.title),
-                                fontSize = 22.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = inter,
-                                color = Color(0xFF03094F)
-                            )
-
-                            Spacer(Modifier.height(6.dp))
-
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
+                            Column (
+                                modifier = Modifier.fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .shadow(8.dp,
+                                        RoundedCornerShape(12.dp), clip = false)
+                                    .background(Color.White, RoundedCornerShape(12.dp))
+                                    .padding(12.dp),
+                                verticalArrangement = Arrangement.Center
                             ) {
-                                Text(
-                                    text = "Duration -",
-                                    fontSize = 20.sp,
-                                    fontFamily = inter,
-                                    color = Color.Black
-                                )
-
-                                Spacer(Modifier.width(6.dp))
 
                                 Text(
-                                    text = " ${task.durationMinutes} min",
+                                    text = timerViewModel.capitalizeFirst(task.title),
                                     fontSize = 22.sp,
-                                    fontWeight = FontWeight.SemiBold,
+                                    fontWeight = FontWeight.Bold,
                                     fontFamily = inter,
-                                    color = Color(0xFF03094F)
+                                    color = Color(0xFF050E6D)
                                 )
+
+                                Spacer(Modifier.height(6.dp))
+
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Duration -",
+                                        fontSize = 20.sp,
+                                        fontFamily = inter,
+                                        color = Color(0xFF3841A4)
+                                    )
+
+                                    Spacer(Modifier.width(6.dp))
+
+                                    Text(
+                                        text = " ${task.durationMinutes} min",
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        fontFamily = inter,
+                                        color = Color(0xFF3841A4)
+                                    )
+                                }
+
+                                Spacer(Modifier.height(6.dp))
+
                             }
-
-                            Spacer(Modifier.height(6.dp))
-
-                            Text(
-                                "${task.completedDate}    ${task.completedTime}",
-                                fontSize = 14.sp,
-                                fontFamily = inter
-                            )
-
                         }
-                    }
+                }
+
                 }
             }
         }
