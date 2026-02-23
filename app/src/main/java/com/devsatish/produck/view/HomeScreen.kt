@@ -1,0 +1,365 @@
+package com.devsatish.produck.view
+
+import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavController
+import com.devsatish.produck.R
+import com.devsatish.produck.ui.theme.darkBlue
+import com.devsatish.produck.ui.theme.secondColor
+import com.devsatish.produck.ui.theme.themeColor
+import com.devsatish.produck.viewmodel.TimerViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
+
+    val completedList by timerViewModel.completedTasks.collectAsState()
+
+    val inter = FontFamily(Font(R.font.inter_medium))
+    val titlegreet = FontFamily(Font(R.font.fellgreet))
+
+    var selectedMinutes by remember { mutableIntStateOf(25) }
+
+    var expanded by remember { mutableStateOf(false) }
+    var expanded2 by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    var taskname by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    val tasklist by timerViewModel.popularTaskTitles.collectAsState()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Produck",
+                        fontSize = 32.sp,
+                        fontFamily = titlegreet
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = themeColor,
+                    titleContentColor = Color.White
+                )
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    showDialog = true
+                },
+                containerColor = secondColor,
+                contentColor = Color.White
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "add",
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+        },
+    ) { paddingValues ->
+
+        if (showDialog) {
+            Dialog(
+                onDismissRequest = { showDialog = false },
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            ) {
+
+                Box(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                        .height(400.dp)
+                        .background(Color(0xFFE0E0E0))
+                ) {
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(400.dp)
+                            .padding(8.dp)
+                            .background(color = Color(0xFFE0E0E0))
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        Text(
+                            text = "New Timer",
+                            fontSize = 24.sp,
+                            color = darkBlue,
+                            fontFamily = inter
+                        )
+
+                        Box {
+                            OutlinedTextField(
+                                value = taskname,
+                                onValueChange = { taskname = it },
+                                singleLine = true,
+                                label = { Text("Enter title..") }
+                            )
+
+                            IconButton(onClick = {
+                                expanded = true
+                            },
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            ) { Icon(
+                                painter = painterResource(R.drawable.arrow_down),
+                                contentDescription = null
+                            ) }
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            tasklist.forEach { it ->
+                                DropdownMenuItem(
+                                    text = { Text(it) },
+                                    onClick = {
+                                        taskname = it
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
+
+
+                        Box {
+                            Box(
+                                modifier = Modifier
+                                    .padding(12.dp)
+                                    .width(250.dp)
+                                    .height(40.dp)
+                                    .background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(20.dp)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Default - $selectedMinutes Minutes",
+                                    fontFamily = inter
+                                )
+                            }
+
+                            IconButton(onClick = {
+                                expanded2 = true
+                            },
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                                    .padding(end = 8.dp)
+                            ) { Icon(
+                                painter = painterResource(R.drawable.arrow_down),
+                                contentDescription = null
+                            ) }
+                        }
+                        DropdownMenu(
+                            expanded = expanded2,
+                            onDismissRequest = { expanded2 = false }
+                        ) {
+                            listOf(2,5,10,15,20,30,60,120).forEach { it ->
+                                DropdownMenuItem(
+                                    text = { Text("$it minutes") },
+                                    onClick = {
+                                        selectedMinutes = it
+                                        expanded2 = false
+                                    }
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.height(18.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .width(160.dp)
+                                .height(50.dp)
+                                .shadow(elevation = 8.dp)
+                                .background(
+                                    color = secondColor,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .clickable {
+                                    if (taskname.isNotBlank()) {
+                                        timerViewModel.startTimer(
+                                            taskname,
+                                            selectedMinutes)
+
+                                        Toast.makeText(context,"Timer Started",
+                                            Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        Toast.makeText(context,"Enter task",
+                                            Toast.LENGTH_SHORT).show()
+                                    }
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Start Timer",
+                                fontSize = 24.sp,
+                                color = Color.White
+                            )
+                        }
+                    }
+
+                        IconButton(
+                            onClick = { showDialog = false },
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .size(40.dp)
+                                .background(color = Color(0xFFD9D9D9))
+                                .shadow(elevation = 4.dp)) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                tint = Color.Gray
+
+                            )
+                        }
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier.padding(paddingValues)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+                    .shadow(4.dp, RoundedCornerShape(18.dp))
+                    .background(Color.White, RoundedCornerShape(18.dp))
+                    .border(1.dp, Color(0xFFE0E0E0),
+                        RoundedCornerShape(18.dp))
+                    .padding(vertical = 10.dp, horizontal = 6.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = timerViewModel.formattedTime(),
+                    fontSize = 48.sp,
+                    fontFamily = inter
+                )
+            }
+
+            LazyColumn {
+                items(completedList) { task ->
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp)
+                            .background(Color(0xFFF5F5F5),
+                                RoundedCornerShape(12.dp))
+                    ) {
+
+                        Column (
+                            modifier = Modifier.fillMaxWidth()
+                                .wrapContentHeight()
+                                .shadow(8.dp,
+                                    RoundedCornerShape(12.dp), clip = false)
+                                .background(Color.White, RoundedCornerShape(12.dp))
+                                .padding(12.dp),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+
+                            Text(
+                                text = timerViewModel.capitalizeFirst(task.title),
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = inter,
+                                color = Color(0xFF03094F)
+                            )
+
+                            Spacer(Modifier.height(6.dp))
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Duration -",
+                                    fontSize = 20.sp,
+                                    fontFamily = inter,
+                                    color = Color.Black
+                                )
+
+                                Spacer(Modifier.width(6.dp))
+
+                                Text(
+                                    text = " ${task.durationMinutes} min",
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = inter,
+                                    color = Color(0xFF03094F)
+                                )
+                            }
+
+                            Spacer(Modifier.height(6.dp))
+
+                            Text(
+                                "${task.completedDate}    ${task.completedTime}",
+                                fontSize = 14.sp,
+                                fontFamily = inter
+                            )
+
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}
