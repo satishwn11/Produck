@@ -1,7 +1,7 @@
-package com.devsatish.produck.repository
+package com.devsatish.produck.data.repository
 
-import com.devsatish.produck.model.CompletedTask
-import com.devsatish.produck.model.TaskDao
+import com.devsatish.produck.data.model.CompletedTask
+import com.devsatish.produck.data.model.TaskDao
 import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
 import java.util.Date

@@ -1,4 +1,4 @@
-package com.devsatish.produck.view
+package com.devsatish.produck.ui.screen
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -58,7 +58,7 @@ import com.devsatish.produck.R
 import com.devsatish.produck.ui.theme.darkBlue
 import com.devsatish.produck.ui.theme.secondColor
 import com.devsatish.produck.ui.theme.themeColor
-import com.devsatish.produck.viewmodel.TimerViewModel
+import com.devsatish.produck.ui.viewmodel.TimerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,8 +67,8 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
     val completedList by timerViewModel.completedTasks.collectAsState()
 
     val inter = FontFamily(Font(R.font.inter_medium))
-    val titlegreet = FontFamily(Font(R.font.fellgreet))
-    val titlegreet2 = FontFamily(Font(R.font.jacquesfrancoisregular))
+    val titleGreet = FontFamily(Font(R.font.fellgreet))
+    val titleGreet2 = FontFamily(Font(R.font.jacquesfrancoisregular))
 
     var selectedMinutes by remember { mutableIntStateOf(25) }
 
@@ -87,7 +87,7 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                     Text(
                         text = "Produck",
                         fontSize = 32.sp,
-                        fontFamily = titlegreet
+                        fontFamily = titleGreet
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -153,20 +153,23 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                                 label = { Text("Enter title..") }
                             )
 
-                            IconButton(onClick = {
-                                expanded = true
-                            },
+                            IconButton(
+                                onClick = {
+                                    expanded = true
+                                },
                                 modifier = Modifier.align(Alignment.CenterEnd)
-                            ) { Icon(
-                                painter = painterResource(R.drawable.arrow_down),
-                                contentDescription = null
-                            ) }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.arrow_down),
+                                    contentDescription = null
+                                )
+                            }
                         }
                         DropdownMenu(
                             expanded = expanded,
                             onDismissRequest = { expanded = false }
                         ) {
-                            tasklist.forEach { it ->
+                            tasklist.forEach {
                                 DropdownMenuItem(
                                     text = { Text(it) },
                                     onClick = {
@@ -196,21 +199,25 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                                 )
                             }
 
-                            IconButton(onClick = {
-                                expanded2 = true
-                            },
-                                modifier = Modifier.align(Alignment.CenterEnd)
+                            IconButton(
+                                onClick = {
+                                    expanded2 = true
+                                },
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
                                     .padding(end = 8.dp)
-                            ) { Icon(
-                                painter = painterResource(R.drawable.arrow_down),
-                                contentDescription = null
-                            ) }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.arrow_down),
+                                    contentDescription = null
+                                )
+                            }
                         }
                         DropdownMenu(
                             expanded = expanded2,
                             onDismissRequest = { expanded2 = false }
                         ) {
-                            listOf(2,5,10,15,20,30,60,120).forEach { it ->
+                            listOf(1,2, 5, 10, 15, 20, 30, 60, 120).forEach {
                                 DropdownMenuItem(
                                     text = { Text("$it minutes") },
                                     onClick = {
@@ -236,13 +243,18 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                                     if (taskname.isNotBlank()) {
                                         timerViewModel.startTimer(
                                             taskname,
-                                            selectedMinutes)
+                                            selectedMinutes
+                                        )
 
-                                        Toast.makeText(context,"Timer Started",
-                                            Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context, "Timer Started",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     } else {
-                                        Toast.makeText(context,"Enter task",
-                                            Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context, "Enter task",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                 },
                             contentAlignment = Alignment.Center
@@ -255,20 +267,21 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                         }
                     }
 
-                        IconButton(
-                            onClick = { showDialog = false },
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .size(40.dp)
-                                .background(color = Color(0xFFD9D9D9))
-                                .shadow(elevation = 4.dp)) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = null,
-                                tint = Color.Gray
+                    IconButton(
+                        onClick = { showDialog = false },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .size(40.dp)
+                            .background(color = Color(0xFFD9D9D9))
+                            .shadow(elevation = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            tint = Color.Gray
 
-                            )
-                        }
+                        )
+                    }
                 }
             }
         }
@@ -283,8 +296,10 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                     .padding(12.dp)
                     .shadow(4.dp, RoundedCornerShape(18.dp))
                     .background(Color.White, RoundedCornerShape(18.dp))
-                    .border(1.dp, Color(0xFFE0E0E0),
-                        RoundedCornerShape(18.dp))
+                    .border(
+                        1.dp, Color(0xFFE0E0E0),
+                        RoundedCornerShape(18.dp)
+                    )
                     .padding(vertical = 10.dp, horizontal = 6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -299,11 +314,15 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
             val groupedList = completedList.groupBy { it.completedDate }
             LazyColumn {
                 groupedList.forEach { (date, tasks) ->
+                    val totalMinutes = tasks.sumOf { it.durationMinutes }
+                    val hours = totalMinutes / 60
+                    val minutes = totalMinutes % 60
+
                     item {
                         Text(
                             text = date,
                             fontSize = 30.sp,
-                            fontFamily = titlegreet2,
+                            fontFamily = titleGreet2,
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
@@ -314,16 +333,21 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(12.dp)
-                                .background(Color(0xFFF5F5F5),
-                                    RoundedCornerShape(12.dp))
+                                .padding(vertical = 6.dp, horizontal = 12.dp)
+                                .background(
+                                    Color(0xFFF5F5F5),
+                                    RoundedCornerShape(12.dp)
+                                )
                         ) {
 
-                            Column (
-                                modifier = Modifier.fillMaxWidth()
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
                                     .wrapContentHeight()
-                                    .shadow(8.dp,
-                                        RoundedCornerShape(12.dp), clip = false)
+                                    .shadow(
+                                        8.dp,
+                                        RoundedCornerShape(12.dp), clip = false
+                                    )
                                     .background(Color.White, RoundedCornerShape(12.dp))
                                     .padding(12.dp),
                                 verticalArrangement = Arrangement.Center
@@ -360,11 +384,52 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                                     )
                                 }
 
-                                Spacer(Modifier.height(6.dp))
-
                             }
                         }
-                }
+                    }
+
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp, horizontal = 12.dp)
+                                .background(
+                                    Color(0xFFF5F5F5),
+                                    RoundedCornerShape(12.dp)
+                                )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .shadow(
+                                        8.dp,
+                                        RoundedCornerShape(12.dp), clip = false
+                                    )
+                                    .background(Color.White, RoundedCornerShape(12.dp))
+                                    .padding(horizontal = 18.dp, vertical = 12.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Total     -",
+                                    fontSize = 20.sp,
+                                    fontFamily = inter,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.Red
+                                )
+
+                                Text(
+                                    text = "        $hours hr $minutes min",
+                                    fontSize = 20.sp,
+                                    fontFamily = inter,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.Red
+                                )
+                            }
+
+                            Spacer(Modifier.height(8.dp))
+                        }
+                    }
 
                 }
             }

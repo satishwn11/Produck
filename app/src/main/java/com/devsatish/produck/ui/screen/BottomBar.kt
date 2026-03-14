@@ -1,4 +1,4 @@
-package com.devsatish.produck.view
+package com.devsatish.produck.ui.screen
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -9,7 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.devsatish.produck.navigation.BottomNavItems
+import com.devsatish.produck.utils.navigation.BottomNavItems
 
 @Composable
 fun BottomBar(tabNavController: NavController) {

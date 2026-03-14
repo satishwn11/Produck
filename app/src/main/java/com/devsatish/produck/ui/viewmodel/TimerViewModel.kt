@@ -1,19 +1,21 @@
-package com.devsatish.produck.viewmodel
+package com.devsatish.produck.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devsatish.produck.repository.SoundController
-import com.devsatish.produck.repository.TimerRepository
-import com.devsatish.produck.service.TimerForegroundService
+import com.devsatish.produck.data.repository.SoundController
+import com.devsatish.produck.data.repository.TimerRepository
+import com.devsatish.produck.utils.service.TimerForegroundService
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.minutes
 
 class TimerViewModel(
     private val repository: TimerRepository,
@@ -34,10 +36,10 @@ class TimerViewModel(
 
     private var timerJob: Job? = null
     private var continuousSecond = 0
-    private var targetseconds = 25 * 60
+    private var targetSeconds = 25 * 60
+    private var breakTime = 0
 
-
-
+    var startTime = System.currentTimeMillis()
 
     val popularTaskTitles = repository.getTitlesOrderedByUsage()
         .stateIn(
@@ -54,13 +56,11 @@ class TimerViewModel(
         )
 
 
-    fun startTimer(
-        title: String,
-        minutes: Int
-    ) {
-        targetseconds = minutes * 60
+    fun startTimer(title: String, minutes: Int) {
 
-        // kill old timer
+        targetSeconds = minutes * 60
+        breakTime = targetSeconds
+
         timerJob?.cancel()
         isRunning = false
         reset()
@@ -69,16 +69,22 @@ class TimerViewModel(
         elapsedSeconds = 0
         continuousSecond = 0
         isRunning = true
+
+        startTime = System.currentTimeMillis()
+
         timerService?.show(currentTitle, true)
 
         timerJob = viewModelScope.launch {
             while (isRunning) {
-                delay(1000)
-                elapsedSeconds++
-                continuousSecond++
 
-                if (continuousSecond == targetseconds) {
+                delay(1000)
+
+                val currentTime = System.currentTimeMillis()
+                elapsedSeconds = ((currentTime - startTime) / 1000).toInt()
+
+                if (elapsedSeconds == targetSeconds) {
                     soundController.playBell()
+                    targetSeconds += breakTime
                 }
             }
         }
@@ -88,23 +94,30 @@ class TimerViewModel(
         isRunning = false
         timerJob?.cancel()
         timerService?.show(currentTitle, false)
-        continuousSecond = 0
         soundController.stopBell()
     }
 
     fun resume() {
+
         if (isRunning) return
+
         isRunning = true
         timerService?.show(currentTitle, true)
 
-        timerJob = viewModelScope.launch {
-            while (isRunning) {
-                delay(1000)
-                elapsedSeconds++
-                continuousSecond++
+        startTime = System.currentTimeMillis() - elapsedSeconds * 1000
 
-                if (continuousSecond == targetseconds) {
+        timerJob = viewModelScope.launch {
+
+            while (isRunning) {
+
+                delay(1000)
+
+                val currentTime = System.currentTimeMillis()
+                elapsedSeconds = ((currentTime - startTime) / 1000).toInt()
+
+                if (elapsedSeconds == targetSeconds) {
                     soundController.playBell()
+                    targetSeconds += breakTime
                 }
             }
         }

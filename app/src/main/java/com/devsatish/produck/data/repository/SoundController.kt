@@ -1,4 +1,4 @@
-package com.devsatish.produck.repository
+package com.devsatish.produck.data.repository
 
 import android.content.Context
 import android.media.MediaPlayer

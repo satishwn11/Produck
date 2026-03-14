@@ -16,13 +16,13 @@
         android:theme="@style/Theme.App.Splash">
 
         <service
-            android:name=".service.TimerForegroundService"
+            android:name=".utils.service.TimerForegroundService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
 
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.screen.MainActivity"
             android:exported="true">
 
             <intent-filter>

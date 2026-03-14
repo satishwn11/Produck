@@ -1,4 +1,4 @@
-package com.devsatish.produck.navigation
+package com.devsatish.produck.utils.navigation
 
 import com.devsatish.produck.R
 
@@ -9,4 +9,5 @@ sealed class BottomNavItems (
 ) {
     object Home: BottomNavItems("Home","home", R.drawable.home_icon)
     object Timer: BottomNavItems("Timer", "timer", R.drawable.timer_icon)
+    object Note : BottomNavItems("Note","note",R.drawable.trophy)
 }

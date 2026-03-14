@@ -1,4 +1,4 @@
-package com.devsatish.produck.view
+package com.devsatish.produck.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.devsatish.produck.R
 import com.devsatish.produck.ui.theme.secondColor
-import com.devsatish.produck.viewmodel.TimerViewModel
+import com.devsatish.produck.ui.viewmodel.TimerViewModel
 
 @Composable
 fun TimerScreen(

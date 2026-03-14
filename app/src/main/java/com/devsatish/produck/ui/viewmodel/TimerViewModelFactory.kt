@@ -1,9 +1,9 @@
-package com.devsatish.produck.viewmodel
+package com.devsatish.produck.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.devsatish.produck.repository.SoundController
-import com.devsatish.produck.repository.TimerRepository
+import com.devsatish.produck.data.repository.SoundController
+import com.devsatish.produck.data.repository.TimerRepository
 
 class TimerViewModelFactory(
     private val repository: TimerRepository,

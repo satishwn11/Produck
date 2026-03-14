@@ -1,4 +1,4 @@
-package com.devsatish.produck.service
+package com.devsatish.produck.utils.service
 
 import android.app.PendingIntent
 import android.app.Service
@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.devsatish.produck.MainActivity
+import com.devsatish.produck.ui.screen.MainActivity
 import com.devsatish.produck.R
 
 class TimerForegroundService : Service() {
