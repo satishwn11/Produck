@@ -114,10 +114,16 @@ class TimerViewModel(
 
                 val currentTime = System.currentTimeMillis()
                 elapsedSeconds = ((currentTime - startTime) / 1000).toInt()
+                Log.i("Check","elapsedSed:$elapsedSeconds, targetSec:$targetSeconds")
 
                 if (elapsedSeconds == targetSeconds) {
                     soundController.playBell()
-                    targetSeconds += breakTime
+                    if(currentTitle.isNotBlank()) {
+                        targetSeconds += breakTime
+                        Log.i("Check","title is not blank")
+                    } else {
+                        targetSeconds += 1500
+                    }
                 }
             }
         }
