@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,6 +69,32 @@ fun TimerScreen(
                 fontFamily = inter,
                 color = Color(0xFF221056)
             )
+        }
+
+        Spacer(Modifier.height(8.dp))
+
+        if(timerViewModel.bTimerVisiblity) {
+            Column(
+                modifier = Modifier
+                    .width(90.dp)
+                    .padding(2.dp)
+                    .shadow(4.dp, RoundedCornerShape(14.dp))
+                    .background(Color.White, RoundedCornerShape(14.dp))
+                    .border(1.dp, Color(0xFF26008D),
+                        RoundedCornerShape(14.dp))
+                    .padding(vertical = 6.dp, horizontal = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = timerViewModel.formatedBreakTimer(),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp,
+                    fontFamily = inter,
+                    color = Color(0xFF221056)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))

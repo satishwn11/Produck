@@ -75,7 +75,7 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
     var expanded by remember { mutableStateOf(false) }
     var expanded2 by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
-    var taskname by remember { mutableStateOf("") }
+    var taskName by remember { mutableStateOf("") }
     val context = LocalContext.current
 
     val tasklist by timerViewModel.popularTaskTitles.collectAsState()
@@ -147,8 +147,8 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
 
                         Box {
                             OutlinedTextField(
-                                value = taskname,
-                                onValueChange = { taskname = it },
+                                value = taskName,
+                                onValueChange = { taskName = it },
                                 singleLine = true,
                                 label = { Text("Enter title..") }
                             )
@@ -173,7 +173,7 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                                 DropdownMenuItem(
                                     text = { Text(it) },
                                     onClick = {
-                                        taskname = it
+                                        taskName = it
                                         expanded = false
                                     }
                                 )
@@ -217,7 +217,7 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                             expanded = expanded2,
                             onDismissRequest = { expanded2 = false }
                         ) {
-                            listOf(1,2, 5, 10, 15, 20, 30, 60, 120).forEach {
+                            listOf(2, 5, 10, 15, 20, 30, 60, 120).forEach {
                                 DropdownMenuItem(
                                     text = { Text("$it minutes") },
                                     onClick = {
@@ -240,9 +240,9 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                                     shape = RoundedCornerShape(8.dp)
                                 )
                                 .clickable {
-                                    if (taskname.isNotBlank()) {
+                                    if (taskName.isNotBlank()) {
                                         timerViewModel.startTimer(
-                                            taskname,
+                                            taskName,
                                             selectedMinutes
                                         )
 

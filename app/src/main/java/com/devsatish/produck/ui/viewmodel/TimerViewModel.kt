@@ -15,13 +15,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.minutes
 
 class TimerViewModel(
     private val repository: TimerRepository,
     private val soundController: SoundController
 ) : ViewModel() {
-
 
     private var timerService: TimerForegroundService? = null
 
@@ -34,7 +32,14 @@ class TimerViewModel(
     var isRunning by mutableStateOf(false)
         private set
 
+    var breakTimer by mutableIntStateOf(0)
+        private set
+
+    var bTimerVisiblity by mutableStateOf(false)
+        private set
+
     private var timerJob: Job? = null
+    private var breakJob: Job? = null
     private var continuousSecond = 0
     private var targetSeconds = 25 * 60
     private var breakTime = 0
@@ -93,8 +98,28 @@ class TimerViewModel(
     fun pause() {
         isRunning = false
         timerJob?.cancel()
+        breakJob?.cancel()
         timerService?.show(currentTitle, false)
         soundController.stopBell()
+        breakTimer()
+    }
+
+    fun breakTimer() {
+        breakJob?.cancel()
+        val startTime = System.currentTimeMillis()
+
+        breakJob = viewModelScope.launch {
+            if (currentTitle.isNotBlank() && !isRunning) {
+                bTimerVisiblity = true
+
+                while (!isRunning) {
+                    val currentTime = System.currentTimeMillis()
+                    breakTimer = ((currentTime - startTime) / 1000).toInt()
+                    delay(1000)
+                }
+            }
+
+        }
     }
 
     fun resume() {
@@ -103,6 +128,7 @@ class TimerViewModel(
 
         isRunning = true
         timerService?.show(currentTitle, true)
+        bTimerVisiblity = false
 
         startTime = System.currentTimeMillis() - elapsedSeconds * 1000
 
@@ -111,18 +137,16 @@ class TimerViewModel(
             while (isRunning) {
 
                 delay(1000)
-
                 val currentTime = System.currentTimeMillis()
                 elapsedSeconds = ((currentTime - startTime) / 1000).toInt()
-                Log.i("Check","elapsedSed:$elapsedSeconds, targetSec:$targetSeconds")
+                Log.i("Check", "elapsedSeconds: $elapsedSeconds, targetSeconds: $targetSeconds")
 
                 if (elapsedSeconds == targetSeconds) {
                     soundController.playBell()
-                    if(currentTitle.isNotBlank()) {
-                        targetSeconds += breakTime
-                        Log.i("Check","title is not blank")
+                    targetSeconds += if (currentTitle.isNotBlank()) {
+                        breakTime
                     } else {
-                        targetSeconds += 1500
+                        1500
                     }
                 }
             }
@@ -130,22 +154,23 @@ class TimerViewModel(
     }
 
     fun stopAndSave() {
-            timerJob?.cancel()
-            isRunning = false
-            timerService?.hide()
-            continuousSecond = 0
-            soundController.stopBell()
+        timerJob?.cancel()
+        isRunning = false
+        bTimerVisiblity = false
+        timerService?.hide()
+        continuousSecond = 0
+        soundController.stopBell()
 
-            val minutes = (elapsedSeconds / 60).coerceAtLeast(1)
+        val minutes = (elapsedSeconds / 60).coerceAtLeast(1)
 
-            viewModelScope.launch {
-                repository.saveCompletedTask(
-                    title = currentTitle,
-                    minutes = minutes
-                )
-            }
+        viewModelScope.launch {
+            repository.saveCompletedTask(
+                title = currentTitle,
+                minutes = minutes
+            )
+        }
 
-            reset()
+        reset()
     }
 
     fun attachService(service: TimerForegroundService) {
@@ -161,6 +186,8 @@ class TimerViewModel(
     private fun reset() {
         elapsedSeconds = 0
         currentTitle = ""
+        breakTime = 0
+        targetSeconds = 1500
     }
 
     fun formattedTime(): String {
@@ -168,6 +195,12 @@ class TimerViewModel(
         val m = (elapsedSeconds % 3600) / 60
         val s = elapsedSeconds % 60
         return "%02d:%02d:%02d".format(h, m, s)
+    }
+
+    fun formatedBreakTimer(): String {
+        val minute = breakTimer / 60
+        val second = breakTimer % 60
+        return "%02d:%02d".format(minute, second)
     }
 }
 
