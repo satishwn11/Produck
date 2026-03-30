@@ -42,7 +42,7 @@ class TimerViewModel(
     private var breakJob: Job? = null
     private var continuousSecond = 0
     private var targetSeconds = 25 * 60
-    private var breakTime = 0
+    private var breakAddition = 0
 
     var startTime = System.currentTimeMillis()
 
@@ -64,7 +64,7 @@ class TimerViewModel(
     fun startTimer(title: String, minutes: Int) {
 
         targetSeconds = minutes * 60
-        breakTime = targetSeconds
+        breakAddition = targetSeconds
 
         timerJob?.cancel()
         isRunning = false
@@ -86,16 +86,18 @@ class TimerViewModel(
 
                 val currentTime = System.currentTimeMillis()
                 elapsedSeconds = ((currentTime - startTime) / 1000).toInt()
+//                Log.i("Check", "elapsedSeconds: $elapsedSeconds, targetSeconds: $targetSeconds")
 
                 if (elapsedSeconds == targetSeconds) {
                     soundController.playBell()
-                    targetSeconds += breakTime
+                    targetSeconds += breakAddition
                 }
             }
         }
     }
 
     fun pause() {
+        if(!isRunning) return
         isRunning = false
         timerJob?.cancel()
         breakJob?.cancel()
@@ -139,12 +141,11 @@ class TimerViewModel(
                 delay(1000)
                 val currentTime = System.currentTimeMillis()
                 elapsedSeconds = ((currentTime - startTime) / 1000).toInt()
-                Log.i("Check", "elapsedSeconds: $elapsedSeconds, targetSeconds: $targetSeconds")
 
                 if (elapsedSeconds == targetSeconds) {
                     soundController.playBell()
                     targetSeconds += if (currentTitle.isNotBlank()) {
-                        breakTime
+                        breakAddition
                     } else {
                         1500
                     }
@@ -171,6 +172,7 @@ class TimerViewModel(
         }
 
         reset()
+        targetSeconds = 1500
     }
 
     fun attachService(service: TimerForegroundService) {
@@ -186,8 +188,7 @@ class TimerViewModel(
     private fun reset() {
         elapsedSeconds = 0
         currentTitle = ""
-        breakTime = 0
-        targetSeconds = 1500
+        breakAddition = 0
     }
 
     fun formattedTime(): String {
@@ -203,4 +204,3 @@ class TimerViewModel(
         return "%02d:%02d".format(minute, second)
     }
 }
-

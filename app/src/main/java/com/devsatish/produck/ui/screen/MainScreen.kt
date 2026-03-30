@@ -35,8 +35,11 @@ fun MainScreen(timerViewModel1: TimerViewModel) {
             composable(BottomNavItems.Timer.route) {
                 TimerScreen(navController, timerViewModel1)
             }
-            composable(BottomNavItems.Note.route) {
-
+            composable(BottomNavItems.Wins.route) {
+                WinsScreen()
+            }
+            composable(BottomNavItems.Issue.route) {
+                IssueScreen()
             }
         }
     }

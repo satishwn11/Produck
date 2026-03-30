@@ -15,7 +15,9 @@ import com.devsatish.produck.utils.navigation.BottomNavItems
 fun BottomBar(tabNavController: NavController) {
     val items = listOf(
         BottomNavItems.Home,
-        BottomNavItems.Timer
+        BottomNavItems.Timer,
+        BottomNavItems.Wins,
+        BottomNavItems.Issue
     )
 
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()

@@ -217,7 +217,7 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                             expanded = expanded2,
                             onDismissRequest = { expanded2 = false }
                         ) {
-                            listOf(2, 5, 10, 15, 20, 30, 60, 120).forEach {
+                            listOf(1,2, 5, 10, 15, 20, 30, 60, 120).forEach {
                                 DropdownMenuItem(
                                     text = { Text("$it minutes") },
                                     onClick = {
@@ -364,24 +364,36 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                                 Spacer(Modifier.height(6.dp))
 
                                 Row(
-                                    verticalAlignment = Alignment.CenterVertically
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
+                                    Row {
+                                        Text(
+                                            text = "Duration -",
+                                            fontSize = 20.sp,
+                                            fontFamily = inter,
+                                            color = Color(0xFF3841A4)
+                                        )
+
+                                        Spacer(Modifier.width(6.dp))
+
+                                        Text(
+                                            text = " ${task.durationMinutes} min",
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            fontFamily = inter,
+                                            color = Color(0xFF3841A4)
+                                        )
+                                    }
                                     Text(
-                                        text = "Duration -",
-                                        fontSize = 20.sp,
+                                        text = task.completedTime,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.SemiBold,
                                         fontFamily = inter,
-                                        color = Color(0xFF3841A4)
+                                        color = Color(0xFF4C4E67)
                                     )
 
-                                    Spacer(Modifier.width(6.dp))
-
-                                    Text(
-                                        text = " ${task.durationMinutes} min",
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        fontFamily = inter,
-                                        color = Color(0xFF3841A4)
-                                    )
                                 }
 
                             }
