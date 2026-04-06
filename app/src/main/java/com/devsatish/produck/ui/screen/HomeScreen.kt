@@ -53,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.navigation.NavController
 import com.devsatish.produck.R
 import com.devsatish.produck.ui.theme.darkBlue
 import com.devsatish.produck.ui.theme.secondColor
@@ -62,9 +61,7 @@ import com.devsatish.produck.ui.viewmodel.TimerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
-
-    val completedList by timerViewModel.completedTasks.collectAsState()
+fun HomeScreen(timerViewModel: TimerViewModel) {
 
     val inter = FontFamily(Font(R.font.inter_medium))
     val titleGreet = FontFamily(Font(R.font.fellgreet))
@@ -76,8 +73,10 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
     var expanded2 by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     var taskName by remember { mutableStateOf("") }
+
     val context = LocalContext.current
 
+    val completedList by timerViewModel.completedTasks.collectAsState()
     val tasklist by timerViewModel.popularTaskTitles.collectAsState()
 
     Scaffold(
@@ -217,7 +216,7 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
                             expanded = expanded2,
                             onDismissRequest = { expanded2 = false }
                         ) {
-                            listOf(1,2, 5, 10, 15, 20, 30, 60, 120).forEach {
+                            listOf(2, 5, 10, 15, 20, 25, 30, 40, 60, 120).forEach {
                                 DropdownMenuItem(
                                     text = { Text("$it minutes") },
                                     onClick = {

@@ -30,13 +30,13 @@ fun MainScreen(timerViewModel1: TimerViewModel) {
             modifier = Modifier.padding(paddingValues)
             ) {
             composable(BottomNavItems.Home.route) {
-                HomeScreen(navController,timerViewModel1)
+                HomeScreen(timerViewModel1)
             }
             composable(BottomNavItems.Timer.route) {
                 TimerScreen(navController, timerViewModel1)
             }
             composable(BottomNavItems.Wins.route) {
-                WinsScreen()
+                WinsScreen(timerViewModel1)
             }
             composable(BottomNavItems.Issue.route) {
                 IssueScreen()
