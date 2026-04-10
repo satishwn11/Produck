@@ -15,3 +15,4 @@ val secondColor = Color(0xFF1302FF)
 val darkBlue = Color(0xFF1F008F)
 
 val darkYellow = Color(0xFFFBFF18)
+val lightblue = Color(0xFF3B4FB4)

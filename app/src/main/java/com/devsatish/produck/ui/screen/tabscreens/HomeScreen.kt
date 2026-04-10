@@ -1,4 +1,4 @@
-package com.devsatish.produck.ui.screen
+package com.devsatish.produck.ui.screen.tabscreens
 
 import android.widget.Toast
 import androidx.compose.foundation.background

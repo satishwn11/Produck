@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devsatish.produck.data.model.wins.WinEntity
 import com.devsatish.produck.data.repository.SoundController
 import com.devsatish.produck.data.repository.TimerRepository
 import com.devsatish.produck.utils.service.TimerForegroundService
@@ -36,6 +37,8 @@ class TimerViewModel(
 
     var bTimerVisiblity by mutableStateOf(false)
         private set
+
+    val wins = repository.wins
 
     private var timerJob: Job? = null
     private var breakJob: Job? = null
@@ -176,6 +179,20 @@ class TimerViewModel(
 
     fun attachService(service: TimerForegroundService) {
         timerService = service
+    }
+
+    fun insertWin(category: String, title: String, description: String) {
+        viewModelScope.launch {
+
+            val win = WinEntity(
+                category = category,
+                title = title,
+                description = description,
+                createdAt = System.currentTimeMillis()
+            )
+
+            repository.insertWin(win)
+        }
     }
 
     fun capitalizeFirst(text: String): String {
