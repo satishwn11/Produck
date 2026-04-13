@@ -47,7 +47,7 @@ fun MainScreen(navController: NavHostController, timerViewModel1: TimerViewModel
                 WinsScreen(navController, timerViewModel1)
             }
             composable(BottomNavItems.Issue.route) {
-                IssueScreen()
+                IssueScreen(navController, timerViewModel1)
             }
         }
     }

@@ -1,7 +1,9 @@
 package com.devsatish.produck.data.repository
 
-import com.devsatish.produck.data.model.CompletedTask
-import com.devsatish.produck.data.model.TaskDao
+import com.devsatish.produck.data.model.task.CompletedTask
+import com.devsatish.produck.data.model.task.TaskDao
+import com.devsatish.produck.data.model.issue.IssueDao
+import com.devsatish.produck.data.model.issue.IssueEntity
 import com.devsatish.produck.data.model.wins.WinDao
 import com.devsatish.produck.data.model.wins.WinEntity
 import kotlinx.coroutines.flow.Flow
@@ -11,10 +13,12 @@ import java.util.Locale
 
 class TimerRepository(
     private val dao: TaskDao,
-    private val winDao: WinDao
+    private val winDao: WinDao,
+    private val issueDao: IssueDao
 ) {
 
     val wins = winDao.getAllWins()
+    val issues = issueDao.getAllIssue()
 
     suspend fun saveCompletedTask(title: String, minutes: Int) {
 
@@ -45,4 +49,15 @@ class TimerRepository(
         winDao.insertWin(win)
     }
 
+    suspend fun deleteWin(win: WinEntity) {
+        winDao.deleteWin(win)
+    }
+
+    suspend fun insertIssue(issue: IssueEntity) {
+        issueDao.insertIssue(issue)
+    }
+
+    suspend fun deleteIssue(issue: IssueEntity) {
+        issueDao.deleteIssue(issue)
+    }
 }

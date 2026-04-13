@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devsatish.produck.data.model.issue.IssueEntity
 import com.devsatish.produck.data.model.wins.WinEntity
 import com.devsatish.produck.data.repository.SoundController
 import com.devsatish.produck.data.repository.TimerRepository
@@ -39,6 +40,7 @@ class TimerViewModel(
         private set
 
     val wins = repository.wins
+    val issues = repository.issues
 
     private var timerJob: Job? = null
     private var breakJob: Job? = null
@@ -192,6 +194,32 @@ class TimerViewModel(
             )
 
             repository.insertWin(win)
+        }
+    }
+
+    fun deleteWin(win: WinEntity) {
+        viewModelScope.launch {
+            repository.deleteWin(win)
+        }
+    }
+
+    fun insertIssue(category: String, title: String, description: String) {
+        viewModelScope.launch {
+
+            val issue = IssueEntity(
+                category = category,
+                title = title,
+                description = description,
+                createdAt = System.currentTimeMillis()
+            )
+
+            repository.insertIssue(issue)
+        }
+    }
+
+    fun deleteIssue(issue: IssueEntity) {
+        viewModelScope.launch {
+            repository.deleteIssue(issue)
         }
     }
 
