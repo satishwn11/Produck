@@ -41,8 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.devsatish.produck.R
-import com.devsatish.produck.ui.theme.windarkgreen
-import com.devsatish.produck.ui.theme.wingreen
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -56,17 +54,14 @@ fun WinsScreen(
     timerViewModel: TimerViewModel
 ) {
 
-    val inter = FontFamily(Font(R.font.inter_medium))
-    val font1 = FontFamily(
-        Font(R.font.jacquesfrancois_regular)
-    )
+    val font1 = FontFamily(Font(R.font.jacquesfrancois_regular))
     val wins by timerViewModel.wins.collectAsState(initial = emptyList())
 
     Scaffold(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Blue,
+                    containerColor = Color(0xFF00820E),
                     titleContentColor = Color.White
                 ),
                 title = {
@@ -81,7 +76,7 @@ fun WinsScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-
+                navController.navigate("winInput")
                 },
                 containerColor = Color(0xFF3B9538)
             ) {

@@ -1,6 +1,7 @@
 package com.devsatish.produck.ui.screen.tabscreens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.Font
@@ -36,11 +38,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.devsatish.produck.ui.theme.darkYellow
 import com.devsatish.produck.R
+import com.devsatish.produck.ui.theme.darkYellow
 import com.devsatish.produck.ui.theme.issuedarkyellow
-import com.devsatish.produck.ui.theme.windarkgreen
-import com.devsatish.produck.ui.theme.wingreen
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -52,21 +52,21 @@ fun IssueScreen(
     navController: NavHostController,
     timerViewModel: TimerViewModel
 ) {
-    val titleGreet2 = FontFamily(Font(R.font.jacquesfrancoisregular))
+    val font1 = FontFamily(Font(R.font.jacquesfrancois_regular))
     val issues by timerViewModel.issues.collectAsState(initial = emptyList())
 
     Scaffold(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = darkYellow,
-                    titleContentColor = Color.Black
+                    containerColor = Color(0xFF960000),
+                    titleContentColor = Color.White
                 ),
                 title = {
                     Text(
                         text = "Feedbacks - Issues",
                         fontSize = 32.sp,
-                        fontFamily = FontFamily.Serif
+                        fontFamily = font1
                     )
                 }
             )
@@ -76,12 +76,12 @@ fun IssueScreen(
                 onClick = {
                     navController.navigate("issueInput")
                 },
-                containerColor = darkYellow
+                containerColor = Color(0xFFC02F61)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = null,
-                    tint = Color.Black,
+                    tint = Color.White,
                     modifier = Modifier.size(35.dp)
                 )
             }
@@ -112,22 +112,24 @@ fun IssueScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(issuedarkyellow, RoundedCornerShape(12.dp))
+                            .shadow(
+                                elevation = 6.dp,
+                                shape = RoundedCornerShape(12.dp),
+                                ambientColor = Color(0xFF640000),
+                                spotColor = Color(0xFF640000),
+                                clip = false
+                            )
+                            .border(width = 1.dp, color = Color.Red, RoundedCornerShape(12.dp))
+                            .background(Color.White, RoundedCornerShape(12.dp))
                             .padding(12.dp)
-                            .pointerInput(Unit) {
-                                detectTapGestures(
-                                    onDoubleTap = {
-                                        timerViewModel.deleteIssue(issue)
-                                    }
-                                )
-                            }
                     ) {
 
                         // Category
                         Text(
                             text = issue.category,
-                            color = Color.Cyan,
-                            fontSize = 14.sp
+                            color = Color(0xFF293CA7),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.W600
                         )
 
                         // Title
@@ -135,14 +137,14 @@ fun IssueScreen(
                             text = issue.title,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = Color(0xFFCB0A0A)
                         )
 
                         // Description
                         Text(
                             text = issue.description,
                             fontSize = 16.sp,
-                            color = Color.LightGray
+                            color = Color.DarkGray
                         )
 
                         Spacer(modifier = Modifier.height(6.dp))
