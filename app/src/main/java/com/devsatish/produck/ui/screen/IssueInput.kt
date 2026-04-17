@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -69,117 +72,158 @@ fun IssueInput(
 
         Box(
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(10.dp))
-                .clickable {
-                    expand = true
-                }
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.LightGray)
+                .clickable { expand = true }
+                .padding(horizontal = 8.dp, vertical = 5.dp)
         ) {
             Text(
                 text = issueCategory,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.W800,
-                color = Color.Blue
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1565C0)
             )
         }
 
-        BasicTextField(
-            value = issueTitle,
-            onValueChange = { issueTitle = it },
+        Card(
+            shape = RoundedCornerShape(10.dp),
+            elevation = CardDefaults.cardElevation(6.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Black
+            ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
-            textStyle = TextStyle(
-                fontSize = 28.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.DarkGray
-            ),
-            singleLine = true,
-            cursorBrush = SolidColor(Color.Blue),
-            decorationBox = { innerTextField ->
-
-                if (issueTitle.isEmpty()) {
-                    Text(
-                        text = "Enter title...",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.DarkGray
-                    )
-                }
-                innerTextField()
-            }
-        )
-
-        BasicTextField(
-            value = issueDescription,
-            onValueChange = { issueDescription = it },
-            modifier = Modifier
-                .padding(top = 4.dp)
-                .fillMaxWidth()
-                .heightIn(min = 120.dp, max = 150.dp),
-            textStyle = TextStyle(
-                fontSize = 18.sp,
-                lineHeight = 24.sp,
-                color = Color.Black
-            ),
-            maxLines = 6,
-            decorationBox = { innerTextField ->
-                if (issueDescription.isEmpty()) {
-                    Text(
-                        text = "Write in detail...",
-                        fontSize = 18.sp,
-                        color = Color.Gray
-                    )
-                }
-                innerTextField()
-            }
-        )
-
-        Button(onClick = {
-
-            if(issueTitle.isNotEmpty() && issueDescription.isNotEmpty() && issueCategory != "select category") {
-                timerViewModel.insertIssue(
-                    category = issueCategory,
-                    title = issueTitle,
-                    description = issueDescription
-                )
-                focusManager.clearFocus()
-                navController.navigateUp()
-            } else {
-                Toast.makeText(context,"Please fill all 3 section",
-                    Toast.LENGTH_SHORT).show()
-            }
-
-        }) { Text("Save Issue") }
-
-        DropdownMenu(
-            expanded = expand,
-            onDismissRequest = { expand = false }
         ) {
-            tasklist.forEach { task ->
-                DropdownMenuItem(
-                    text = {
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    color = Color(0xFF1D8316),
-                                    shape = RoundedCornerShape(12.dp)
+            Box(
+                modifier = Modifier.padding(14.dp)
+            ) {
+
+                BasicTextField(
+                    value = issueTitle,
+                    onValueChange = { issueTitle = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    textStyle = TextStyle(
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    ),
+                    singleLine = true,
+                    cursorBrush = SolidColor(Color.Yellow),
+                    decorationBox = { innerTextField ->
+
+                        Box {
+                            if (issueTitle.isEmpty()) {
+                                Text(
+                                    text = "Enter title...",
+                                    fontSize = 28.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color.White
                                 )
-                        ) {
-                            Text(
-                                text = task,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.W500,
-                                color = Color.White,
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
-                            )
+                            }
+                            innerTextField()
                         }
-                    },
-                    onClick = {
-                        issueCategory = task
-                        expand = false
+                    }
+                )
+            }
+            }
+
+        Card(
+            shape = RoundedCornerShape(10.dp),
+            elevation = CardDefaults.cardElevation(8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(12.dp)
+            ) {
+
+                BasicTextField(
+                    value = issueDescription,
+                    onValueChange = { issueDescription = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 120.dp, max = 150.dp),
+                    textStyle = TextStyle(
+                        fontSize = 18.sp,
+                        lineHeight = 24.sp,
+                        color = Color.DarkGray
+                    ),
+                    maxLines = 6,
+                    decorationBox = { innerTextField ->
+
+                        Box {
+                            if (issueDescription.isEmpty()) {
+                                Text(
+                                    text = "Write in detail...",
+                                    fontSize = 18.sp,
+                                    color = Color.DarkGray
+                                )
+                            }
+                            innerTextField()
+                        }
                     }
                 )
             }
         }
+
+            Button(onClick = {
+
+                if (issueTitle.isNotEmpty() && issueDescription.isNotEmpty() && issueCategory != "select category") {
+                    timerViewModel.insertIssue(
+                        category = issueCategory,
+                        title = issueTitle,
+                        description = issueDescription
+                    )
+                    focusManager.clearFocus()
+                    navController.navigateUp()
+                } else {
+                    Toast.makeText(
+                        context, "Please fill all 3 section",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            },
+
+                shape = RoundedCornerShape(12.dp),
+                contentPadding = PaddingValues(
+                    horizontal = 12.dp,
+                    vertical = 1.dp
+                )
+            ) { Text("Save Issue") }
+
+            DropdownMenu(
+                expanded = expand,
+                onDismissRequest = { expand = false }
+            ) {
+                tasklist.forEach { task ->
+                    DropdownMenuItem(
+                        text = {
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        color = Color(0xFF1D8316),
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                            ) {
+                                Text(
+                                    text = task,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.W500,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                                )
+                            }
+                        },
+                        onClick = {
+                            issueCategory = task
+                            expand = false
+                        }
+                    )
+                }
+            }
+        }
     }
-}

@@ -8,13 +8,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -71,70 +75,102 @@ fun WinsInput(
 
         Box(
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(10.dp))
-                .clickable {
-                expand = true
-            }
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.LightGray)
+                .clickable { expand = true }
+                .padding(horizontal = 8.dp, vertical = 5.dp)
         ) {
             Text(
                 text = win,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.W800,
-                color = Color.Blue
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1565C0)
             )
         }
 
-        BasicTextField(
-            value = winTitle,
-            onValueChange = { winTitle = it },
+        Card(
+            shape = RoundedCornerShape(10.dp),
+            elevation = CardDefaults.cardElevation(6.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Black
+            ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
-            textStyle = TextStyle(
-                fontSize = 28.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.DarkGray
-            ),
-            singleLine = true,
-            cursorBrush = SolidColor(Color.Blue),
-            decorationBox = { innerTextField ->
+        ) {
+            Box(
+                modifier = Modifier.padding(14.dp)
+            ) {
 
-                if (winTitle.isEmpty()) {
-                    Text(
-                        text = "Enter title...",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.DarkGray
-                    )
-                }
-                innerTextField()
+                BasicTextField(
+                    value = winTitle,
+                    onValueChange = { winTitle = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = TextStyle(
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    ),
+                    singleLine = true,
+                    cursorBrush = SolidColor(Color.Yellow),
+                    decorationBox = { innerTextField ->
+
+                        Box {
+                            if (winTitle.isEmpty()) {
+                                Text(
+                                    text = "Enter title...",
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
+                            innerTextField()
+                        }
+                    }
+                )
             }
-        )
+        }
 
-        BasicTextField(
-            value = winDescription,
-            onValueChange = { winDescription = it },
+        Card(
+            shape = RoundedCornerShape(10.dp),
+            elevation = CardDefaults.cardElevation(8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
             modifier = Modifier
-                .padding(top = 4.dp)
                 .fillMaxWidth()
-                .heightIn(min = 120.dp, max = 150.dp),
-            textStyle = TextStyle(
-                fontSize = 18.sp,
-                lineHeight = 24.sp,
-                color = Color.Black
-            ),
-            maxLines = 6,
-            decorationBox = { innerTextField ->
-                if (winDescription.isEmpty()) {
-                    Text(
-                        text = "Write in detail...",
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(12.dp)
+            ) {
+
+                BasicTextField(
+                    value = winDescription,
+                    onValueChange = { winDescription = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 120.dp, max = 150.dp),
+                    textStyle = TextStyle(
                         fontSize = 18.sp,
-                        color = Color.Gray
-                    )
-                }
-                innerTextField()
+                        lineHeight = 24.sp,
+                        color = Color.DarkGray
+                    ),
+                    maxLines = 6,
+                    cursorBrush = SolidColor(Color(0xFF1565C0)),
+                    decorationBox = { innerTextField ->
+
+                        Box {
+                            if (winDescription.isEmpty()) {
+                                Text(
+                                    text = "Write in detail...",
+                                    fontSize = 18.sp,
+                                    color = Color.DarkGray
+                                )
+                            }
+                            innerTextField()
+                        }
+                    }
+                )
             }
-        )
+        }
 
         Button(onClick = {
 
@@ -151,7 +187,13 @@ fun WinsInput(
                     Toast.LENGTH_SHORT).show()
             }
 
-        }) { Text("Save achievement") }
+        },
+            shape = RoundedCornerShape(12.dp),
+            contentPadding = PaddingValues(
+                horizontal = 12.dp,
+                vertical = 1.dp
+            )
+            ) { Text("Save achievement") }
 
         DropdownMenu(
             expanded = expand,

@@ -137,7 +137,7 @@ fun IssueScreen(
                             text = issue.title,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFFCB0A0A)
+                            color = Color.Red
                         )
 
                         // Description
