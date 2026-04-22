@@ -37,6 +37,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -45,6 +46,8 @@ import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +79,7 @@ fun WinsScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                navController.navigate("winInput")
+                    navController.navigate("winInput")
                 },
                 containerColor = Color(0xFF3B9538)
             ) {
@@ -102,73 +105,93 @@ fun WinsScreen(
 
         } else {
 
+            val groupedList = wins.groupBy {
+                SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                    .format(Date(it.createdAt))
+            }
+
             LazyColumn(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .padding(8.dp)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(wins) { win ->
+                groupedList.forEach { (date, wins) ->
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .shadow(
-                                elevation = 6.dp,
-                                shape = RoundedCornerShape(12.dp),
-                                ambientColor = Color(0xFF006400),
-                                spotColor = Color(0xFF006400),
-                                clip = false)
-                            .border(width = 1.dp, color = Color.Green, RoundedCornerShape(12.dp))
-                            .background(Color.White, RoundedCornerShape(12.dp))
-                            .padding(12.dp)
-                            .pointerInput(Unit) {
-                                detectTapGestures(
-                                    onDoubleTap = {
-                                        timerViewModel.deleteWin(win)
-                                    }
+                    item {
+                        Text(
+                            text = date,
+                            fontSize = 30.sp,
+                            fontFamily = FontFamily.Serif,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    items(wins) { win ->
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 6.dp, vertical = 4.dp)
+                                .shadow(
+                                    elevation = 6.dp,
+                                    shape = RoundedCornerShape(12.dp),
+                                    ambientColor = Color(0xFF006400),
+                                    spotColor = Color(0xFF006400),
+                                    clip = false
                                 )
-                            }
-                    ) {
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Green,
+                                    RoundedCornerShape(12.dp)
+                                )
+                                .background(Color.White, RoundedCornerShape(12.dp))
+                                .padding(12.dp)
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onDoubleTap = {
+                                            timerViewModel.deleteWin(win)
+                                        }
+                                    )
+                                }
+                        ) {
 
-                        // Category
-                        Text(
-                            text = win.category,
-                            color = Color(0xFF293CA7),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.W600
-                        )
+                            // Category
+                            Text(
+                                text = win.category,
+                                color = Color(0xFF293CA7),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.W600
+                            )
 
-                        // Title
-                        Text(
-                            text = win.title,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF3B9538)
-                        )
+                            // Title
+                            Text(
+                                text = win.title,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF3B9538)
+                            )
 
-                        // Description
-                        Text(
-                            text = win.description,
-                            fontSize = 16.sp,
-                            color = Color.DarkGray
-                        )
+                            // Description
+                            Text(
+                                text = win.description,
+                                fontSize = 16.sp,
+                                color = Color.DarkGray
+                            )
 
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                            val time = SimpleDateFormat("hh:mm a", Locale.getDefault())
+                                .format(Date(win.createdAt))
+
+                            Text(
+                                text = time,
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
+                        }
                         Spacer(modifier = Modifier.height(6.dp))
-
-                        // Date & Time
-                        val date = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-                            .format(Date(win.createdAt))
-
-                        val time = SimpleDateFormat("hh:mm a", Locale.getDefault())
-                            .format(Date(win.createdAt))
-
-                        Text(
-                            text = "$date • $time",
-                            fontSize = 12.sp,
-                            color = Color.Gray
-                        )
                     }
                 }
             }

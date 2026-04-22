@@ -26,6 +26,9 @@ fun RootNavigation(timerViewModel: TimerViewModel) {
         composable("issueInput") {
             IssueInput(navController, timerViewModel)
         }
+        composable("routineScreen") {
+            RoutineScreen()
+        }
     }
 
 }
