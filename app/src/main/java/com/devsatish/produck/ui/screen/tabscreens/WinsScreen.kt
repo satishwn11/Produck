@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -46,8 +45,6 @@ import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)

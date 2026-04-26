@@ -10,27 +10,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
 fun RoutineScreen() {
 
-    val routineList = listOf(
-        RoutineItem("6:00 - 7:00", "Kotlin"),
-        RoutineItem("7:00 - 8:00", "Android app development"),
-        RoutineItem("9:00 - 11:00", "Reasoning"),
-        RoutineItem("11:00 - 12:30", "GS"),
-        RoutineItem("1:00 - 2:00", "Academic Study"),
-        RoutineItem("6:00 - 9:00", "Mathematics"),
-        RoutineItem("9:00 - 10:00","GK")
+    val routineList = listOf (
+        "6:00 - 7:00" to "Kotlin",
+        "7:00 - 8:00" to "Android app development",
+        "9:00 - 11:00" to  "Reasoning",
+        "11:00 - 12:30" to "GS",
+        "1:00 - 2:00" to  "Academic Study",
+        "6:00 - 9:00" to "Mathematics",
+        "9:00 - 10:00" to "GK"
     )
+    
 
     Column(
         modifier = Modifier
@@ -38,6 +44,23 @@ fun RoutineScreen() {
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        Text(
+            text = "Goal - Clear the CHSL Exam",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            fontFamily = FontFamily.Serif,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        Divider(thickness = 1.dp)
+
+        Spacer(Modifier.height(6.dp))
+
         Text(
             text = "Routines",
             fontSize = 28.sp,
@@ -46,19 +69,15 @@ fun RoutineScreen() {
         )
         Spacer(Modifier.height(8.dp))
 
-        routineList.forEach {
+        routineList.forEach { it ->
             RoutineItemView(it)
         }
+
     }
 }
 
-data class RoutineItem(
-    val time: String,
-    val task: String
-)
-
 @Composable
-fun RoutineItemView(item: RoutineItem) {
+fun RoutineItemView(item: Pair<String, String>) {
 
     Card(
         modifier = Modifier
@@ -74,14 +93,14 @@ fun RoutineItemView(item: RoutineItem) {
 
             // Left side → Time
             Text(
-                text = item.time,
+                text = item.first,
                 modifier = Modifier.weight(1f),
                 fontSize = 14.sp
             )
 
             // Right side → Task
             Text(
-                text = item.task,
+                text = item.second,
                 modifier = Modifier.weight(1f),
                 fontSize = 16.sp
             )

@@ -14,9 +14,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import com.devsatish.produck.data.model.AppDatabase
 import com.devsatish.produck.data.repository.SoundController
@@ -24,6 +22,7 @@ import com.devsatish.produck.data.repository.TimerRepository
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import com.devsatish.produck.ui.viewmodel.TimerViewModelFactory
 import com.devsatish.produck.utils.service.TimerForegroundService
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -41,27 +40,20 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        val channel = NotificationChannel(
+            "timer_channel",
+            "Focus Timer",
+            NotificationManager.IMPORTANCE_LOW
+        ).apply {
+            description = "Shows running focus timer"
+            setShowBadge(false)
+        }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel = NotificationChannel(
-                    "timer_channel",
-                    "Focus Timer",
-                    NotificationManager.IMPORTANCE_LOW
-                ).apply {
-                    description = "Shows running focus timer"
-                    setShowBadge(false)
-                }
-
-                val manager = getSystemService(NotificationManager::class.java)
-                manager.createNotificationChannel(channel)
-            }
+        val manager = getSystemService(NotificationManager::class.java)
+        manager.createNotificationChannel(channel)
 
 
         installSplashScreen()
-
-        window.statusBarColor = Color(0xFFFAF4FF).toArgb()
-        WindowCompat.getInsetsController(window, window.decorView)
-            .isAppearanceLightStatusBars = true
 
         val database = AppDatabase.getDatabase(this)
         val repository = TimerRepository(
@@ -94,7 +86,14 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-           RootNavigation(timerViewModel)
+            val systemUiController = rememberSystemUiController()
+
+            systemUiController.setSystemBarsColor(
+                color = Color(0xFFFAF4FF),
+                darkIcons = true
+            )
+
+            RootNavigation(timerViewModel)
         }
     }
 

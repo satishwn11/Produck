@@ -35,12 +35,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.devsatish.produck.R
-import com.devsatish.produck.ui.theme.darkYellow
-import com.devsatish.produck.ui.theme.issuedarkyellow
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -100,6 +99,11 @@ fun IssueScreen(
 
         } else {
 
+            val groupedList = issues.groupBy {
+                SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                    .format(Date(it.createdAt))
+            }
+
             LazyColumn(
                 modifier = Modifier
                     .padding(paddingValues)
@@ -107,60 +111,82 @@ fun IssueScreen(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(issues) { issue ->
+                groupedList.forEach { (date, issues) ->
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .shadow(
-                                elevation = 6.dp,
-                                shape = RoundedCornerShape(12.dp),
-                                ambientColor = Color(0xFF640000),
-                                spotColor = Color(0xFF640000),
-                                clip = false
+                    item {
+                        Text(
+                            text = date,
+                            fontSize = 30.sp,
+                            fontFamily = FontFamily.Serif,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    items(issues) { issue ->
+
+                        Column (
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .shadow(
+                                    elevation = 6.dp,
+                                    shape = RoundedCornerShape(12.dp),
+                                    ambientColor = Color(0xFF99234C),
+                                    spotColor = Color(0xFFA23434),
+                                    clip = false
+                                )
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Red,
+                                    RoundedCornerShape(12.dp)
+                                )
+                                .background(Color.White, RoundedCornerShape(12.dp))
+                                .padding(12.dp)
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onDoubleTap = {
+                                            timerViewModel.deleteIssue(issue)
+                                        }
+                                    )
+                                }
+                        ) {
+
+                            // Category
+                            Text(
+                                text = issue.category,
+                                color = Color(0xFF293CA7),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.W600
                             )
-                            .border(width = 1.dp, color = Color.Red, RoundedCornerShape(12.dp))
-                            .background(Color.White, RoundedCornerShape(12.dp))
-                            .padding(12.dp)
-                    ) {
 
-                        // Category
-                        Text(
-                            text = issue.category,
-                            color = Color(0xFF293CA7),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.W600
-                        )
+                            // Title
+                            Text(
+                                text = issue.title,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Red
+                            )
 
-                        // Title
-                        Text(
-                            text = issue.title,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Red
-                        )
+                            // Description
+                            Text(
+                                text = issue.description,
+                                fontSize = 16.sp,
+                                color = Color.DarkGray
+                            )
 
-                        // Description
-                        Text(
-                            text = issue.description,
-                            fontSize = 16.sp,
-                            color = Color.DarkGray
-                        )
+                            Spacer(modifier = Modifier.height(6.dp))
 
-                        Spacer(modifier = Modifier.height(6.dp))
+                            val time = SimpleDateFormat("hh:mm a", Locale.getDefault())
+                                .format(Date(issue.createdAt))
 
-                        // Date & Time
-                        val date = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-                            .format(Date(issue.createdAt))
-
-                        val time = SimpleDateFormat("hh:mm a", Locale.getDefault())
-                            .format(Date(issue.createdAt))
-
-                        Text(
-                            text = "$date • $time",
-                            fontSize = 12.sp,
-                            color = Color.Gray
-                        )
+                            Text(
+                                text = time,
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
+                        }
                     }
                 }
             }

@@ -37,6 +37,7 @@ import com.devsatish.produck.ui.screen.tabscreens.HomeScreen
 import com.devsatish.produck.ui.screen.tabscreens.IssueScreen
 import com.devsatish.produck.ui.screen.tabscreens.TimerScreen
 import com.devsatish.produck.ui.screen.tabscreens.WinsScreen
+import com.devsatish.produck.ui.theme.themeColor
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import com.devsatish.produck.utils.navigation.BottomNavItems
 
@@ -55,20 +56,20 @@ fun MainScreen(navController: NavHostController, timerViewModel1: TimerViewModel
         drawerContent = {
             ModalDrawerSheet {
                 Column(
-                    modifier = Modifier.fillMaxWidth(0.9f),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(120.dp)
-                            .background(color = Color.Blue),
+                            .height(220.dp)
+                            .background(color = themeColor),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "Produck",
-                            fontSize = 28.sp,
+                            fontSize = 38.sp,
                             fontWeight = FontWeight.ExtraBold,
                             color = Color.White
                         )
@@ -78,7 +79,7 @@ fun MainScreen(navController: NavHostController, timerViewModel1: TimerViewModel
                         modifier = Modifier
                             .width(60.dp)
                             .height(2.dp)
-                            .background(color = Color.Black)
+                            .background(color = Color.DarkGray)
                     )
 
                     Spacer(Modifier.height(6.dp))
@@ -87,7 +88,7 @@ fun MainScreen(navController: NavHostController, timerViewModel1: TimerViewModel
                         modifier = Modifier
                             .padding(horizontal = 6.dp)
                             .fillMaxWidth()
-                            .height(60.dp)
+                            .height(50.dp)
                             .shadow(elevation = 4.dp, RoundedCornerShape(12.dp))
                             .clip(shape = RoundedCornerShape(12.dp))
                             .background(color = Color.White)
@@ -98,7 +99,7 @@ fun MainScreen(navController: NavHostController, timerViewModel1: TimerViewModel
                     ) {
                         Text(
                             text = "Routine",
-                            fontSize = 28.sp,
+                            fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                         )
