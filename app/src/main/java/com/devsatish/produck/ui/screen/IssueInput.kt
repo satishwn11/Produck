@@ -23,7 +23,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,8 +47,6 @@ fun IssueInput(
     navController: NavHostController,
     timerViewModel: TimerViewModel
 ) {
-
-    val tasklist by timerViewModel.popularTaskTitles.collectAsState()
     val focusManager = LocalFocusManager.current
 
     var expand by remember { mutableStateOf(false) }
@@ -57,10 +54,6 @@ fun IssueInput(
     var issueTitle by remember { mutableStateOf("") }
     var issueDescription by remember { mutableStateOf("") }
     val context = LocalContext.current
-
-//    val today = LocalDate.now()
-//    val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH)
-//    val formattedDate = today.format(formatter)
 
     Column(
         modifier = Modifier
@@ -171,7 +164,11 @@ fun IssueInput(
 
             Button(onClick = {
 
-                if (issueTitle.isNotEmpty() && issueDescription.isNotEmpty() && issueCategory != "select category") {
+                if (
+                    issueTitle.isNotEmpty()
+                    && issueDescription.isNotEmpty()
+                    && issueCategory != "select category"
+                    ) {
                     timerViewModel.insertIssue(
                         category = issueCategory,
                         title = issueTitle,
@@ -198,13 +195,13 @@ fun IssueInput(
                 expanded = expand,
                 onDismissRequest = { expand = false }
             ) {
-                tasklist.forEach { task ->
+                listOf("Expression", "Solution").forEach { task ->
                     DropdownMenuItem(
                         text = {
                             Box(
                                 modifier = Modifier
                                     .background(
-                                        color = Color(0xFF1D8316),
+                                        color = if(task == "Solution") Color(0xFF1D8316)  else Color(0xFFD71A3E) ,
                                         shape = RoundedCornerShape(12.dp)
                                     )
                             ) {
