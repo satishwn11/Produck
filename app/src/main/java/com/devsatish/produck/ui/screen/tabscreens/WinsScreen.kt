@@ -28,6 +28,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -41,6 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.devsatish.produck.R
+import com.devsatish.produck.data.model.wins.WinEntity
+import com.devsatish.produck.ui.screen.components.DeleteAlertDialog
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -56,6 +61,9 @@ fun WinsScreen(
 
     val font1 = FontFamily(Font(R.font.jacquesfrancois_regular))
     val wins by timerViewModel.wins.collectAsState(initial = emptyList())
+
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedWin by remember { mutableStateOf<WinEntity?>(null) }
 
     Scaffold(
         topBar = {
@@ -89,6 +97,23 @@ fun WinsScreen(
             }
         }
     ) { paddingValues ->
+
+        // alert dialog
+        DeleteAlertDialog(
+            showDialog = showDialog,
+            title = selectedWin?.title ?: "",
+            onCancel = {
+                selectedWin = null
+                showDialog = false
+            },
+            onDelete = {
+                selectedWin?.let {
+                    timerViewModel.deleteWin(it)
+                }
+                selectedWin = null
+                showDialog = false
+            }
+        )
 
         if (wins.isEmpty()) {
             Box(
@@ -148,7 +173,8 @@ fun WinsScreen(
                                 .pointerInput(Unit) {
                                     detectTapGestures(
                                         onDoubleTap = {
-                                            timerViewModel.deleteWin(win)
+                                            selectedWin = win
+                                            showDialog = true
                                         }
                                     )
                                 }

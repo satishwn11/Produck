@@ -27,6 +27,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -40,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.devsatish.produck.R
+import com.devsatish.produck.data.model.issue.IssueEntity
+import com.devsatish.produck.ui.screen.components.DeleteAlertDialog
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -53,6 +58,9 @@ fun IssueScreen(
 ) {
     val font1 = FontFamily(Font(R.font.jacquesfrancois_regular))
     val issues by timerViewModel.issues.collectAsState(initial = emptyList())
+
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedIssue by remember { mutableStateOf<IssueEntity?>(null) }
 
     Scaffold(
         topBar = {
@@ -86,6 +94,23 @@ fun IssueScreen(
             }
         }
     ) { paddingValues ->
+
+        // alert dialog
+        DeleteAlertDialog(
+            showDialog = showDialog,
+            title = selectedIssue?.title ?: "",
+            onCancel = {
+                selectedIssue = null
+                showDialog = false
+            },
+            onDelete = {
+                selectedIssue?.let {
+                    timerViewModel.deleteIssue(it)
+                }
+                selectedIssue = null
+                showDialog = false
+            }
+        )
 
         if (issues.isEmpty()) {
             Box(
@@ -127,7 +152,7 @@ fun IssueScreen(
 
                     items(issues) { issue ->
 
-                        Column (
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .shadow(
@@ -147,7 +172,8 @@ fun IssueScreen(
                                 .pointerInput(Unit) {
                                     detectTapGestures(
                                         onDoubleTap = {
-                                            timerViewModel.deleteIssue(issue)
+                                            selectedIssue = issue
+                                            showDialog = true
                                         }
                                     )
                                 }
