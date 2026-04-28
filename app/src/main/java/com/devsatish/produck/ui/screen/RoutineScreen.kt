@@ -24,19 +24,18 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+val routineList = listOf (
+    "6:00 - 7:00" to "Kotlin",
+    "7:00 - 8:00" to "Android app development",
+    "9:00 - 11:00" to  "Reasoning",
+    "11:00 - 12:30" to "GS",
+    "1:00 - 2:00" to  "Academic Study",
+    "6:00 - 9:00" to "Mathematics",
+    "9:00 - 10:00" to "GK"
+)
+
 @Composable
 fun RoutineScreen() {
-
-    val routineList = listOf (
-        "6:00 - 7:00" to "Kotlin",
-        "7:00 - 8:00" to "Android app development",
-        "9:00 - 11:00" to  "Reasoning",
-        "11:00 - 12:30" to "GS",
-        "1:00 - 2:00" to  "Academic Study",
-        "6:00 - 9:00" to "Mathematics",
-        "9:00 - 10:00" to "GK"
-    )
-    
 
     Column(
         modifier = Modifier

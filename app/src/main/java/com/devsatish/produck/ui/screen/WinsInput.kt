@@ -97,7 +97,7 @@ fun WinsInput(
                 .fillMaxWidth()
         ) {
             Box(
-                modifier = Modifier.padding(14.dp)
+                modifier = Modifier.padding(12.dp)
             ) {
 
                 BasicTextField(
@@ -137,8 +137,7 @@ fun WinsInput(
                 .fillMaxWidth()
         ) {
             Box(
-                modifier = Modifier
-                    .padding(12.dp)
+                modifier = Modifier.padding(12.dp)
             ) {
 
                 BasicTextField(

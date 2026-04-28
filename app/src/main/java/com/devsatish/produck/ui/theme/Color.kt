@@ -13,8 +13,10 @@ val Pink40 = Color(0xFF7D5260)
 val themeColor = Color(0xFF0C58C6)
 val secondColor = Color(0xFF1302FF)
 val darkBlue = Color(0xFF1F008F)
+val darkBlue2 = Color(0xFF2C0C8D)
 
 val darkYellow = Color(0xFFFBFF18)
 val issuedarkyellow = Color(0xFF320B0B)
 val wingreen = Color(0xFF259119)
 val windarkgreen = Color(0xFF113902)
+

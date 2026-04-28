@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.devsatish.produck.ui.theme.darkBlue2
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -62,6 +63,7 @@ fun IssueInput(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
+        // category list
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
@@ -77,6 +79,7 @@ fun IssueInput(
             )
         }
 
+        // title box
         Card(
             shape = RoundedCornerShape(10.dp),
             elevation = CardDefaults.cardElevation(6.dp),
@@ -87,15 +90,13 @@ fun IssueInput(
                 .fillMaxWidth()
         ) {
             Box(
-                modifier = Modifier.padding(14.dp)
+                modifier = Modifier.padding(12.dp)
             ) {
 
                 BasicTextField(
                     value = issueTitle,
                     onValueChange = { issueTitle = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
@@ -110,7 +111,7 @@ fun IssueInput(
                                 Text(
                                     text = "Enter title...",
                                     fontSize = 28.sp,
-                                    fontWeight = FontWeight.ExtraBold,
+                                    fontWeight = FontWeight.Bold,
                                     color = Color.White
                                 )
                             }
@@ -119,7 +120,7 @@ fun IssueInput(
                     }
                 )
             }
-            }
+        }
 
         Card(
             shape = RoundedCornerShape(10.dp),
@@ -162,13 +163,14 @@ fun IssueInput(
             }
         }
 
-            Button(onClick = {
+        Button(
+            onClick = {
 
                 if (
                     issueTitle.isNotEmpty()
                     && issueDescription.isNotEmpty()
                     && issueCategory != "select category"
-                    ) {
+                ) {
                     timerViewModel.insertIssue(
                         category = issueCategory,
                         title = issueTitle,
@@ -184,42 +186,42 @@ fun IssueInput(
                 }
             },
 
-                shape = RoundedCornerShape(12.dp),
-                contentPadding = PaddingValues(
-                    horizontal = 12.dp,
-                    vertical = 1.dp
-                )
-            ) { Text("Save Issue") }
+            shape = RoundedCornerShape(12.dp),
+            contentPadding = PaddingValues(
+                horizontal = 12.dp,
+                vertical = 1.dp
+            )
+        ) { Text("Save Issue") }
 
-            DropdownMenu(
-                expanded = expand,
-                onDismissRequest = { expand = false }
-            ) {
-                listOf("Expression", "Solution").forEach { task ->
-                    DropdownMenuItem(
-                        text = {
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        color = if(task == "Solution") Color(0xFF1D8316)  else Color(0xFFD71A3E) ,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                            ) {
-                                Text(
-                                    text = task,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.W500,
-                                    color = Color.White,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+        DropdownMenu(
+            expanded = expand,
+            onDismissRequest = { expand = false }
+        ) {
+            routineList.forEach { task ->
+                DropdownMenuItem(
+                    text = {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = darkBlue2,
+                                    shape = RoundedCornerShape(12.dp)
                                 )
-                            }
-                        },
-                        onClick = {
-                            issueCategory = task
-                            expand = false
+                        ) {
+                            Text(
+                                text = task.second,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.W500,
+                                color = Color.White,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                            )
                         }
-                    )
-                }
+                    },
+                    onClick = {
+                        issueCategory = task.second
+                        expand = false
+                    }
+                )
             }
         }
     }
+}
