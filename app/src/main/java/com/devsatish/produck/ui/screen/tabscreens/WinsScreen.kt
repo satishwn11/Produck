@@ -150,7 +150,10 @@ fun WinsScreen(
                         )
                     }
 
-                    items(wins) { win ->
+                    items(
+                        items = wins,
+                        key = { it.id }
+                    ) { win ->
 
                         Column(
                             modifier = Modifier

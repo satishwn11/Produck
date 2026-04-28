@@ -150,7 +150,10 @@ fun IssueScreen(
                         )
                     }
 
-                    items(issues) { issue ->
+                    items(
+                        items = issues,
+                        key = { it.id }
+                    ) { issue ->
 
                         Column(
                             modifier = Modifier
