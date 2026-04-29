@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.devsatish.produck.ui.theme.darkBlue2
+import com.devsatish.produck.ui.theme.darkPink
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -55,6 +56,8 @@ fun IssueInput(
     var issueTitle by remember { mutableStateOf("") }
     var issueDescription by remember { mutableStateOf("") }
     val context = LocalContext.current
+
+    val newList = routineList + ("9:30 - 10:20" to "Expression")
 
     Column(
         modifier = Modifier
@@ -197,13 +200,13 @@ fun IssueInput(
             expanded = expand,
             onDismissRequest = { expand = false }
         ) {
-            routineList.forEach { task ->
+            newList.forEach { task ->
                 DropdownMenuItem(
                     text = {
                         Box(
                             modifier = Modifier
                                 .background(
-                                    color = darkBlue2,
+                                    color =if(task.second == "Expression") darkPink else darkBlue2,
                                     shape = RoundedCornerShape(12.dp)
                                 )
                         ) {
