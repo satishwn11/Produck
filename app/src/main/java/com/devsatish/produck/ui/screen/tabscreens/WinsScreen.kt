@@ -126,6 +126,10 @@ fun WinsScreen(
             }
 
         } else {
+            val todayDate = SimpleDateFormat(
+                "dd MMM yyyy",
+                Locale.getDefault()
+            ).format(Date())
 
             val groupedList = wins.groupBy {
                 SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
@@ -136,11 +140,37 @@ fun WinsScreen(
                 modifier = Modifier
                     .padding(paddingValues)
             ) {
+
+                // If today has no data at all
+                if (!groupedList.containsKey(todayDate)) {
+                    item {
+                        Text(
+                            text = "Today",
+                            fontSize = 30.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    item {
+                        Text(
+                            text = "No items listed today",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            textAlign = TextAlign.Center,
+                            color = Color.Gray
+                        )
+                    }
+                }
+
                 groupedList.forEach { (date, wins) ->
 
                     item {
                         Text(
-                            text = date,
+                            text = if (date == todayDate) "Today" else date,
                             fontSize = 30.sp,
                             fontFamily = FontFamily.Serif,
                             modifier = Modifier
@@ -150,75 +180,77 @@ fun WinsScreen(
                         )
                     }
 
-                    items(
-                        items = wins,
-                        key = { it.id }
-                    ) { win ->
+                        // existing win card code
+                        items(
+                            items = wins,
+                            key = { it.id }
+                        ) { win ->
 
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 6.dp, vertical = 4.dp)
-                                .shadow(
-                                    elevation = 6.dp,
-                                    shape = RoundedCornerShape(12.dp),
-                                    ambientColor = Color(0xFF006400),
-                                    spotColor = Color(0xFF006400),
-                                    clip = false
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = Color.Green,
-                                    RoundedCornerShape(12.dp)
-                                )
-                                .background(Color.White, RoundedCornerShape(12.dp))
-                                .padding(12.dp)
-                                .pointerInput(Unit) {
-                                    detectTapGestures(
-                                        onDoubleTap = {
-                                            selectedWin = win
-                                            showDialog = true
-                                        }
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 6.dp, vertical = 4.dp)
+                                    .shadow(
+                                        elevation = 6.dp,
+                                        shape = RoundedCornerShape(12.dp),
+                                        ambientColor = Color(0xFF006400),
+                                        spotColor = Color(0xFF006400),
+                                        clip = false
                                     )
-                                }
-                        ) {
+                                    .border(
+                                        width = 1.dp,
+                                        color = Color.Green,
+                                        RoundedCornerShape(12.dp)
+                                    )
+                                    .background(Color.White, RoundedCornerShape(12.dp))
+                                    .padding(12.dp)
+                                    .pointerInput(Unit) {
+                                        detectTapGestures(
+                                            onDoubleTap = {
+                                                selectedWin = win
+                                                showDialog = true
+                                            }
+                                        )
+                                    }
+                            ) {
 
-                            // Category
-                            Text(
-                                text = win.category,
-                                color = Color(0xFF293CA7),
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.W600
-                            )
+                                // Category
+                                Text(
+                                    text = win.category,
+                                    color = Color(0xFF293CA7),
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.W600
+                                )
 
-                            // Title
-                            Text(
-                                text = win.title,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF3B9538)
-                            )
+                                // Title
+                                Text(
+                                    text = win.title,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF3B9538)
+                                )
 
-                            // Description
-                            Text(
-                                text = win.description,
-                                fontSize = 16.sp,
-                                color = Color.DarkGray
-                            )
+                                // Description
+                                Text(
+                                    text = win.description,
+                                    fontSize = 16.sp,
+                                    color = Color.DarkGray
+                                )
 
+                                Spacer(modifier = Modifier.height(6.dp))
+
+                                val time = SimpleDateFormat("hh:mm a", Locale.getDefault())
+                                    .format(Date(win.createdAt))
+
+                                Text(
+                                    text = time,
+                                    fontSize = 12.sp,
+                                    color = Color.Gray
+                                )
+                            }
                             Spacer(modifier = Modifier.height(6.dp))
-
-                            val time = SimpleDateFormat("hh:mm a", Locale.getDefault())
-                                .format(Date(win.createdAt))
-
-                            Text(
-                                text = time,
-                                fontSize = 12.sp,
-                                color = Color.Gray
-                            )
                         }
-                        Spacer(modifier = Modifier.height(6.dp))
-                    }
+
                 }
             }
         }
