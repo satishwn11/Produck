@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +46,7 @@ import androidx.navigation.NavHostController
 import com.devsatish.produck.R
 import com.devsatish.produck.data.model.issue.IssueEntity
 import com.devsatish.produck.ui.screen.components.DeleteAlertDialog
+import com.devsatish.produck.ui.theme.TitleGreet2
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -138,14 +140,15 @@ fun IssueScreen(
                     .padding(paddingValues)
                     .padding(8.dp)
                     .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(bottom = 16.dp)
             ) {
                 // If today has no data at all
                 if (!groupedList.containsKey(todayDate)) {
                     item {
                         Text(
                             text = "Today",
-                            fontSize = 30.sp,
+                            fontSize = 34.sp,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp),
@@ -171,7 +174,7 @@ fun IssueScreen(
                         Text(
                             text = if (date == todayDate) "Today" else date,
                             fontSize = 30.sp,
-                            fontFamily = FontFamily.Serif,
+                            fontFamily = TitleGreet2,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp),
@@ -179,71 +182,71 @@ fun IssueScreen(
                         )
                     }
 
-                        items(
-                            items = issues,
-                            key = { it.id }
-                        ) { issue ->
+                    items(
+                        items = issues,
+                        key = { it.id }
+                    ) { issue ->
 
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .shadow(
-                                        elevation = 6.dp,
-                                        shape = RoundedCornerShape(12.dp),
-                                        ambientColor = Color(0xFF99234C),
-                                        spotColor = Color(0xFFA23434),
-                                        clip = false
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .shadow(
+                                    elevation = 6.dp,
+                                    shape = RoundedCornerShape(12.dp),
+                                    ambientColor = Color(0xFF99234C),
+                                    spotColor = Color(0xFFA23434),
+                                    clip = false
+                                )
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Red,
+                                    RoundedCornerShape(12.dp)
+                                )
+                                .background(Color.White, RoundedCornerShape(12.dp))
+                                .padding(12.dp)
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onDoubleTap = {
+                                            selectedIssue = issue
+                                            showDialog = true
+                                        }
                                     )
-                                    .border(
-                                        width = 1.dp,
-                                        color = Color.Red,
-                                        RoundedCornerShape(12.dp)
-                                    )
-                                    .background(Color.White, RoundedCornerShape(12.dp))
-                                    .padding(12.dp)
-                                    .pointerInput(Unit) {
-                                        detectTapGestures(
-                                            onDoubleTap = {
-                                                selectedIssue = issue
-                                                showDialog = true
-                                            }
-                                        )
-                                    }
-                            ) {
+                                }
+                        ) {
 
-                                // Category
-                                Text(
-                                    text = issue.category,
-                                    color = Color(0xFF293CA7),
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.W600
-                                )
+                            // Category
+                            Text(
+                                text = issue.category,
+                                color = Color(0xFF293CA7),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.W600
+                            )
 
-                                // Title
-                                Text(
-                                    text = issue.title,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Red
-                                )
+                            // Title
+                            Text(
+                                text = issue.title,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Red
+                            )
 
-                                // Description
-                                Text(
-                                    text = issue.description,
-                                    fontSize = 16.sp,
-                                    color = Color.DarkGray
-                                )
+                            // Description
+                            Text(
+                                text = issue.description,
+                                fontSize = 16.sp,
+                                color = Color.DarkGray
+                            )
 
-                                Spacer(modifier = Modifier.height(6.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
 
-                                val time = SimpleDateFormat("hh:mm a", Locale.getDefault())
-                                    .format(Date(issue.createdAt))
+                            val time = SimpleDateFormat("hh:mm a", Locale.getDefault())
+                                .format(Date(issue.createdAt))
 
-                                Text(
-                                    text = time,
-                                    fontSize = 12.sp,
-                                    color = Color.Gray
-                                )
+                            Text(
+                                text = time,
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
                         }
                     }
 

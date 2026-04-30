@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,6 +47,7 @@ import androidx.navigation.NavHostController
 import com.devsatish.produck.R
 import com.devsatish.produck.data.model.wins.WinEntity
 import com.devsatish.produck.ui.screen.components.DeleteAlertDialog
+import com.devsatish.produck.ui.theme.TitleGreet2
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -138,7 +140,8 @@ fun WinsScreen(
 
             LazyColumn(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(bottom = 24.dp)
             ) {
 
                 // If today has no data at all
@@ -146,7 +149,7 @@ fun WinsScreen(
                     item {
                         Text(
                             text = "Today",
-                            fontSize = 30.sp,
+                            fontSize = 34.sp,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp),
@@ -172,7 +175,7 @@ fun WinsScreen(
                         Text(
                             text = if (date == todayDate) "Today" else date,
                             fontSize = 30.sp,
-                            fontFamily = FontFamily.Serif,
+                            fontFamily = TitleGreet2,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp),
@@ -180,76 +183,76 @@ fun WinsScreen(
                         )
                     }
 
-                        // existing win card code
-                        items(
-                            items = wins,
-                            key = { it.id }
-                        ) { win ->
+                    // existing win card code
+                    items(
+                        items = wins,
+                        key = { it.id }
+                    ) { win ->
 
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 6.dp, vertical = 4.dp)
-                                    .shadow(
-                                        elevation = 6.dp,
-                                        shape = RoundedCornerShape(12.dp),
-                                        ambientColor = Color(0xFF006400),
-                                        spotColor = Color(0xFF006400),
-                                        clip = false
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 6.dp, vertical = 4.dp)
+                                .shadow(
+                                    elevation = 6.dp,
+                                    shape = RoundedCornerShape(12.dp),
+                                    ambientColor = Color(0xFF006400),
+                                    spotColor = Color(0xFF006400),
+                                    clip = false
+                                )
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Green,
+                                    RoundedCornerShape(12.dp)
+                                )
+                                .background(Color.White, RoundedCornerShape(12.dp))
+                                .padding(12.dp)
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onDoubleTap = {
+                                            selectedWin = win
+                                            showDialog = true
+                                        }
                                     )
-                                    .border(
-                                        width = 1.dp,
-                                        color = Color.Green,
-                                        RoundedCornerShape(12.dp)
-                                    )
-                                    .background(Color.White, RoundedCornerShape(12.dp))
-                                    .padding(12.dp)
-                                    .pointerInput(Unit) {
-                                        detectTapGestures(
-                                            onDoubleTap = {
-                                                selectedWin = win
-                                                showDialog = true
-                                            }
-                                        )
-                                    }
-                            ) {
+                                }
+                        ) {
 
-                                // Category
-                                Text(
-                                    text = win.category,
-                                    color = Color(0xFF293CA7),
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.W600
-                                )
+                            // Category
+                            Text(
+                                text = win.category,
+                                color = Color(0xFF293CA7),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.W600
+                            )
 
-                                // Title
-                                Text(
-                                    text = win.title,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF3B9538)
-                                )
+                            // Title
+                            Text(
+                                text = win.title,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF3B9538)
+                            )
 
-                                // Description
-                                Text(
-                                    text = win.description,
-                                    fontSize = 16.sp,
-                                    color = Color.DarkGray
-                                )
+                            // Description
+                            Text(
+                                text = win.description,
+                                fontSize = 16.sp,
+                                color = Color.DarkGray
+                            )
 
-                                Spacer(modifier = Modifier.height(6.dp))
-
-                                val time = SimpleDateFormat("hh:mm a", Locale.getDefault())
-                                    .format(Date(win.createdAt))
-
-                                Text(
-                                    text = time,
-                                    fontSize = 12.sp,
-                                    color = Color.Gray
-                                )
-                            }
                             Spacer(modifier = Modifier.height(6.dp))
+
+                            val time = SimpleDateFormat("hh:mm a", Locale.getDefault())
+                                .format(Date(win.createdAt))
+
+                            Text(
+                                text = time,
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
                         }
+                        Spacer(modifier = Modifier.height(6.dp))
+                    }
 
                 }
             }
