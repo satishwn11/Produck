@@ -33,6 +33,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.devsatish.produck.navigation.Routes
 import com.devsatish.produck.ui.screen.tabscreens.HomeScreen
 import com.devsatish.produck.ui.screen.tabscreens.IssueScreen
 import com.devsatish.produck.ui.screen.tabscreens.TimerScreen
@@ -93,7 +94,7 @@ fun MainScreen(navController: NavHostController, timerViewModel1: TimerViewModel
                             .clip(shape = RoundedCornerShape(12.dp))
                             .background(color = Color.White)
                             .clickable {
-                                navController.navigate("routineScreen")
+                                navController.navigate(Routes.ROUTINE)
                             },
                         contentAlignment = Alignment.Center
                     ) {

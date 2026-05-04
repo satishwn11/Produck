@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.devsatish.produck.navigation.Routes
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -15,18 +16,18 @@ fun RootNavigation(timerViewModel: TimerViewModel) {
 
     NavHost(
         navController = navController,
-        startDestination = "mainScreen"
+        startDestination = Routes.MAIN
     ) {
-        composable("mainScreen") {
+        composable(Routes.MAIN) {
             MainScreen(navController, timerViewModel)
         }
-        composable("winInput") {
+        composable(Routes.WIN_INPUT) {
             WinsInput(navController, timerViewModel)
         }
-        composable("issueInput") {
+        composable(Routes.ISSUE_INPUT) {
             IssueInput(navController, timerViewModel)
         }
-        composable("routineScreen") {
+        composable(Routes.ROUTINE) {
             RoutineScreen()
         }
     }
