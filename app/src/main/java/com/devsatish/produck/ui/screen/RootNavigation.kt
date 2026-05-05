@@ -21,6 +21,8 @@ fun RootNavigation(timerViewModel: TimerViewModel) {
         composable(Routes.MAIN) {
             MainScreen(navController, timerViewModel)
         }
+
+        // Inner Screens
         composable(Routes.WIN_INPUT) {
             WinsInput(navController, timerViewModel)
         }

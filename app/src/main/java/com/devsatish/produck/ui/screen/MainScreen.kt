@@ -3,6 +3,7 @@ package com.devsatish.produck.ui.screen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,7 +49,6 @@ import com.devsatish.produck.utils.navigation.BottomNavItems
 fun MainScreen(navController: NavHostController, timerViewModel1: TimerViewModel) {
 
     val tabController = rememberNavController()
-
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     ModalNavigationDrawer(
@@ -87,15 +87,16 @@ fun MainScreen(navController: NavHostController, timerViewModel1: TimerViewModel
 
                     Box(
                         modifier = Modifier
-                            .padding(horizontal = 6.dp)
+                            .padding(horizontal = 8.dp)
                             .fillMaxWidth()
-                            .height(50.dp)
-                            .shadow(elevation = 4.dp, RoundedCornerShape(12.dp))
-                            .clip(shape = RoundedCornerShape(12.dp))
+                            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(5.dp))
+                            .shadow(elevation = 4.dp, RoundedCornerShape(5.dp))
+                            .clip(shape = RoundedCornerShape(5.dp))
                             .background(color = Color.White)
                             .clickable {
                                 navController.navigate(Routes.ROUTINE)
-                            },
+                            }
+                            .padding(vertical = 6.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -105,12 +106,10 @@ fun MainScreen(navController: NavHostController, timerViewModel1: TimerViewModel
                             color = Color.Black,
                         )
                     }
-
                 }
             }
         }
     ) {
-
         Scaffold(
             bottomBar = {
                 BottomBar(tabController)
