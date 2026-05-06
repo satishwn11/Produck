@@ -28,7 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,10 +44,10 @@ import com.devsatish.produck.ui.screen.tabscreens.HomeScreen
 import com.devsatish.produck.ui.screen.tabscreens.IssueScreen
 import com.devsatish.produck.ui.screen.tabscreens.TimerScreen
 import com.devsatish.produck.ui.screen.tabscreens.WinsScreen
+import com.devsatish.produck.ui.theme.Inter
 import com.devsatish.produck.ui.theme.themeColor
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import com.devsatish.produck.utils.navigation.BottomNavItems
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -98,21 +101,30 @@ fun MainScreen(navController: NavHostController, timerViewModel1: TimerViewModel
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .fillMaxWidth()
-                            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(5.dp))
-                            .shadow(elevation = 4.dp, RoundedCornerShape(5.dp))
-                            .clip(shape = RoundedCornerShape(5.dp))
-                            .background(color = Color.White)
+                            .shadow(
+                                elevation = 4.dp,
+                                shape = RectangleShape
+                            )
+                            .clip(RectangleShape)
+                            .background(Color.White)
+                            .border(
+                                width = 0.5.dp,
+                                color = Black,
+                                shape = RectangleShape
+                            )
                             .clickable {
                                 navController.navigate(Routes.ROUTINE)
                             }
-                            .padding(vertical = 6.dp),
+                            .padding(vertical = 10.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "Routine",
                             fontSize = 24.sp,
+                            fontFamily = Inter,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            color = Color.DarkGray,
+                            letterSpacing = 0.5.sp
                         )
                     }
                 }
