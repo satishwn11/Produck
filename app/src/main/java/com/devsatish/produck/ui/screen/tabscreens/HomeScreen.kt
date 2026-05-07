@@ -1,5 +1,6 @@
 package com.devsatish.produck.ui.screen.tabscreens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -111,6 +113,7 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
         },
     ) { paddingValues ->
 
+        // Dialog upper layer
         if (showDialog) {
             Dialog(
                 onDismissRequest = { showDialog = false },
@@ -284,9 +287,12 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
             }
         }
 
+        // List items Screen
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
+
+
 
             Column(
                 modifier = Modifier
@@ -309,7 +315,21 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
                 )
             }
 
-            val groupedList = completedList.groupBy { it.completedDate }
+            val groupedList = remember(completedList) {
+                completedList.groupBy { it.completedDate }
+            }
+
+            if(groupedList.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("No achievements yet...")
+                }
+            }
+
             LazyColumn {
                 groupedList.forEach { (date, tasks) ->
                     val totalMinutes = tasks.sumOf { it.durationMinutes }
@@ -421,7 +441,7 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = "Total     -",
+                                    text = "Total   - ",
                                     fontSize = 20.sp,
                                     fontFamily = Inter,
                                     fontWeight = FontWeight.SemiBold,
@@ -429,7 +449,7 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
                                 )
 
                                 Text(
-                                    text = "        $hours hr $minutes min",
+                                    text = "$hours hr $minutes min",
                                     fontSize = 20.sp,
                                     fontFamily = Inter,
                                     fontWeight = FontWeight.SemiBold,
