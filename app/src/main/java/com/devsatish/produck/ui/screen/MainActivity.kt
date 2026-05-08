@@ -29,6 +29,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        installSplashScreen()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED
@@ -51,9 +53,6 @@ class MainActivity : ComponentActivity() {
 
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(channel)
-
-
-        installSplashScreen()
 
         val database = AppDatabase.getDatabase(this)
         val repository = TimerRepository(

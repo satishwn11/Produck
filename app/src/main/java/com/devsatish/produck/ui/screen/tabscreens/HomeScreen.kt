@@ -1,6 +1,5 @@
 package com.devsatish.produck.ui.screen.tabscreens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -293,7 +292,6 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
         ) {
 
 
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -319,7 +317,7 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
                 completedList.groupBy { it.completedDate }
             }
 
-            if(groupedList.isEmpty()) {
+            if (completedList.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .padding(paddingValues)

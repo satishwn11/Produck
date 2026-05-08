@@ -133,9 +133,11 @@ fun WinsScreen(
                 Locale.getDefault()
             ).format(Date())
 
-            val groupedList = wins.groupBy {
-                SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-                    .format(Date(it.createdAt))
+            val groupedList = remember(wins) {
+                wins.groupBy {
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                        .format(Date(it.createdAt))
+                }
             }
 
             LazyColumn(
@@ -169,7 +171,7 @@ fun WinsScreen(
                     }
                 }
 
-                groupedList.forEach { (date, wins) ->
+                groupedList.forEach { (date, winList) ->
 
                     item {
                         Text(
@@ -185,7 +187,7 @@ fun WinsScreen(
 
                     // existing win card code
                     items(
-                        items = wins,
+                        items = winList,
                         key = { it.id }
                     ) { win ->
 

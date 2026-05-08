@@ -121,7 +121,7 @@ fun IssueScreen(
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("No achievements yet...")
+                Text("No issues reported yet...")
             }
 
         } else {
@@ -130,9 +130,11 @@ fun IssueScreen(
                 Locale.getDefault()
             ).format(Date())
 
-            val groupedList = issues.groupBy {
-                SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-                    .format(Date(it.createdAt))
+            val groupedList = remember(issues) {
+                issues.groupBy {
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                        .format(Date(it.createdAt))
+                }
             }
 
             LazyColumn(
@@ -168,7 +170,7 @@ fun IssueScreen(
                     }
                 }
 
-                groupedList.forEach { (date, issues) ->
+                groupedList.forEach { (date, issueList) ->
 
                     item {
                         Text(
@@ -183,7 +185,7 @@ fun IssueScreen(
                     }
 
                     items(
-                        items = issues,
+                        items = issueList,
                         key = { it.id }
                     ) { issue ->
 

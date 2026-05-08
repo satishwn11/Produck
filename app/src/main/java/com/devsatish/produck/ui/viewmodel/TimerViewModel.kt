@@ -36,7 +36,7 @@ class TimerViewModel(
     var breakTimer by mutableIntStateOf(0)
         private set
 
-    var bTimerVisiblity by mutableStateOf(false)
+    var bTimerVisibility by mutableStateOf(false)
         private set
 
     val wins = repository.wins
@@ -116,7 +116,7 @@ class TimerViewModel(
 
         breakJob = viewModelScope.launch {
             if (currentTitle.isNotBlank() && !isRunning) {
-                bTimerVisiblity = true
+                bTimerVisibility = true
 
                 while (!isRunning) {
                     val currentTime = System.currentTimeMillis()
@@ -134,7 +134,7 @@ class TimerViewModel(
 
         isRunning = true
         timerService?.show(currentTitle, true)
-        bTimerVisiblity = false
+        bTimerVisibility = false
 
         startTime = System.currentTimeMillis() - elapsedSeconds * 1000
 
@@ -161,7 +161,7 @@ class TimerViewModel(
     fun stopAndSave() {
         timerJob?.cancel()
         isRunning = false
-        bTimerVisiblity = false
+        bTimerVisibility = false
         timerService?.hide()
         continuousSecond = 0
         soundController.stopBell()
