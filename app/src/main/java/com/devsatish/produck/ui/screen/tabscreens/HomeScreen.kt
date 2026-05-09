@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -76,8 +77,6 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
 
     val completedList by timerViewModel.completedTasks.collectAsState()
     val tasklist by timerViewModel.popularTaskTitles.collectAsState()
-
-
 
     Scaffold(
         topBar = {
@@ -324,7 +323,7 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
                         .fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("No achievements yet...")
+                    CircularProgressIndicator()
                 }
             }
 

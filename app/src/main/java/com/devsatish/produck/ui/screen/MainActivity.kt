@@ -13,6 +13,7 @@ import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
@@ -25,11 +26,63 @@ import com.devsatish.produck.utils.service.TimerForegroundService
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var repository: TimerRepository
+    private lateinit var timerViewModel: TimerViewModel
+    private var isLoading = mutableStateOf(true)
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
 
-        installSplashScreen()
+        splashScreen.setKeepOnScreenCondition {
+            isLoading.value
+        }
+
+        val database = AppDatabase.getDatabase(this)
+        repository = TimerRepository(
+            database.taskDao(),
+            database.winDao(),
+            database.issueDao()
+        )
+
+        timerViewModel = ViewModelProvider(
+            this,
+            TimerViewModelFactory(
+                repository,
+                soundController = SoundController(this)
+            )
+        )[TimerViewModel::class.java]
+
+
+        val serviceIntent = Intent(this, TimerForegroundService::class.java)
+        startService(serviceIntent)
+
+        bindService(serviceIntent, object : ServiceConnection {
+
+            override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
+                val service = (binder as TimerForegroundService.LocalBinder).getService()
+                timerViewModel.attachService(service)
+
+                 isLoading.value = false
+            }
+
+            override fun onServiceDisconnected(name: ComponentName?) {}
+        }, BIND_AUTO_CREATE)
+
+        setContent {
+            val systemUiController = rememberSystemUiController()
+
+            systemUiController.setSystemBarsColor(
+                color = Color(0xFFFAF4FF),
+                darkIcons = true
+            )
+
+            RootNavigation(timerViewModel)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
@@ -54,46 +107,6 @@ class MainActivity : ComponentActivity() {
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(channel)
 
-        val database = AppDatabase.getDatabase(this)
-        val repository = TimerRepository(
-            database.taskDao(),
-            database.winDao(),
-            database.issueDao()
-        )
-
-        val timerViewModel = ViewModelProvider(
-            this,
-            TimerViewModelFactory(
-                repository,
-                soundController = SoundController(this)
-            )
-        )[TimerViewModel::class.java]
-
-
-        val serviceIntent = Intent(this, TimerForegroundService::class.java)
-        startService(serviceIntent)
-
-        bindService(serviceIntent, object : ServiceConnection {
-
-            override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
-                val service = (binder as TimerForegroundService.LocalBinder).getService()
-                timerViewModel.attachService(service)
-            }
-
-            override fun onServiceDisconnected(name: ComponentName?) {}
-        }, BIND_AUTO_CREATE)
-
-
-        setContent {
-            val systemUiController = rememberSystemUiController()
-
-            systemUiController.setSystemBarsColor(
-                color = Color(0xFFFAF4FF),
-                darkIcons = true
-            )
-
-            RootNavigation(timerViewModel)
-        }
     }
 
     override fun onDestroy() {
