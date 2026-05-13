@@ -42,6 +42,29 @@ class MainActivity : ComponentActivity() {
             isLoading.value
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    101
+                )
+            }
+        }
+
+        val channel = NotificationChannel(
+            "timer_channel",
+            "Focus Timer",
+            NotificationManager.IMPORTANCE_LOW
+        ).apply {
+            description = "Shows running focus timer"
+            setShowBadge(false)
+        }
+
+        val manager = getSystemService(NotificationManager::class.java)
+        manager.createNotificationChannel(channel)
+
         val database = AppDatabase.getDatabase(this)
         repository = TimerRepository(
             database.taskDao(),
@@ -83,29 +106,6 @@ class MainActivity : ComponentActivity() {
 
             RootNavigation(timerViewModel)
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermissions(
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    101
-                )
-            }
-        }
-
-        val channel = NotificationChannel(
-            "timer_channel",
-            "Focus Timer",
-            NotificationManager.IMPORTANCE_LOW
-        ).apply {
-            description = "Shows running focus timer"
-            setShowBadge(false)
-        }
-
-        val manager = getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(channel)
 
     }
 

@@ -1,6 +1,7 @@
 package com.devsatish.produck.ui.screen.tabscreens
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -36,10 +38,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,6 +65,7 @@ import com.devsatish.produck.ui.theme.darkBlue
 import com.devsatish.produck.ui.theme.secondColor
 import com.devsatish.produck.ui.theme.themeColor
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,8 +80,25 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
 
     val context = LocalContext.current
 
-    val completedList by timerViewModel.completedTasks.collectAsState()
+    val completedList by timerViewModel.completedTasks.collectAsState(null)
     val tasklist by timerViewModel.popularTaskTitles.collectAsState()
+
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
+    val shouldHandleBack by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 5
+        }
+    }
+
+    BackHandler(
+        enabled = shouldHandleBack
+    ) {
+        coroutineScope.launch {
+            listState.animateScrollToItem(0)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -285,181 +307,203 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
             }
         }
 
-        // List items Screen
+        // Home list items Screen
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
 
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp)
-                    .shadow(4.dp, RoundedCornerShape(18.dp))
-                    .background(Color.White, RoundedCornerShape(18.dp))
-                    .border(
-                        1.dp, Color(0xFFE0E0E0),
-                        RoundedCornerShape(18.dp)
-                    )
-                    .padding(vertical = 10.dp, horizontal = 6.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = timerViewModel.formattedTime(),
-                    fontSize = 48.sp,
-                    fontFamily = Inter
-                )
-            }
-
             val groupedList = remember(completedList) {
-                completedList.groupBy { it.completedDate }
+                completedList?.groupBy { it.completedDate } ?: emptyMap()
             }
 
-            if (completedList.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+            when {
+                completedList.isNullOrEmpty() -> {
+                    Box(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
-            }
 
-            LazyColumn {
-                groupedList.forEach { (date, tasks) ->
-                    val totalMinutes = tasks.sumOf { it.durationMinutes }
-                    val hours = totalMinutes / 60
-                    val minutes = totalMinutes % 60
-
-                    item {
+                completedList!!.isEmpty() -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
-                            text = date,
-                            fontSize = 30.sp,
-                            fontFamily = TitleGreet2,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
+                            text = "No achievements yet...",
+                            fontSize = 20.sp,
+                            fontFamily = Inter
                         )
                     }
+                }
 
-                    items(tasks) { task ->
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 6.dp, horizontal = 12.dp)
-                                .background(
-                                    Color(0xFFF5F5F5),
-                                    RoundedCornerShape(12.dp)
-                                )
-                        ) {
-
+                else -> {
+                    LazyColumn(
+                        state = listState
+                    ) {
+                        item {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .wrapContentHeight()
-                                    .shadow(
-                                        8.dp,
-                                        RoundedCornerShape(12.dp), clip = false
+                                    .padding(12.dp)
+                                    .shadow(4.dp, RoundedCornerShape(18.dp))
+                                    .background(Color.White, RoundedCornerShape(18.dp))
+                                    .border(
+                                        1.dp, Color(0xFFE0E0E0),
+                                        RoundedCornerShape(18.dp)
                                     )
-                                    .background(Color.White, RoundedCornerShape(12.dp))
-                                    .padding(12.dp),
+                                    .padding(vertical = 10.dp, horizontal = 6.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
                             ) {
-
                                 Text(
-                                    text = timerViewModel.capitalizeFirst(task.title),
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = Inter,
-                                    color = Color(0xFF050E6D)
+                                    text = timerViewModel.formattedTime(),
+                                    fontSize = 48.sp,
+                                    fontFamily = Inter
                                 )
+                            }
+                        }
 
-                                Spacer(Modifier.height(6.dp))
+                        groupedList.forEach { (date, tasks) ->
+                            val totalMinutes = tasks.sumOf { it.durationMinutes }
+                            val hours = totalMinutes / 60
+                            val minutes = totalMinutes % 60
 
-                                Row(
+                            item {
+                                Text(
+                                    text = date,
+                                    fontSize = 30.sp,
+                                    fontFamily = TitleGreet2,
                                     modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Row {
-                                        Text(
-                                            text = "Duration -",
-                                            fontSize = 20.sp,
-                                            fontFamily = Inter,
-                                            color = Color(0xFF3841A4)
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+
+                            items(tasks) { task ->
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 6.dp, horizontal = 12.dp)
+                                        .background(
+                                            Color(0xFFF5F5F5),
+                                            RoundedCornerShape(12.dp)
                                         )
+                                ) {
 
-                                        Spacer(Modifier.width(6.dp))
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .wrapContentHeight()
+                                            .shadow(
+                                                8.dp,
+                                                RoundedCornerShape(12.dp), clip = false
+                                            )
+                                            .background(Color.White, RoundedCornerShape(12.dp))
+                                            .padding(12.dp),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
 
                                         Text(
-                                            text = " ${task.durationMinutes} min",
-                                            fontSize = 20.sp,
+                                            text = timerViewModel.capitalizeFirst(task.title),
+                                            fontSize = 22.sp,
                                             fontWeight = FontWeight.Bold,
                                             fontFamily = Inter,
-                                            color = Color(0xFF3841A4)
+                                            color = Color(0xFF050E6D)
+                                        )
+
+                                        Spacer(Modifier.height(6.dp))
+
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Row {
+                                                Text(
+                                                    text = "Duration -",
+                                                    fontSize = 20.sp,
+                                                    fontFamily = Inter,
+                                                    color = Color(0xFF3841A4)
+                                                )
+
+                                                Spacer(Modifier.width(6.dp))
+
+                                                Text(
+                                                    text = " ${task.durationMinutes} min",
+                                                    fontSize = 20.sp,
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontFamily = Inter,
+                                                    color = Color(0xFF3841A4)
+                                                )
+                                            }
+                                            Text(
+                                                text = task.completedTime,
+                                                fontSize = 16.sp,
+                                                fontWeight = FontWeight.SemiBold,
+                                                fontFamily = Inter,
+                                                color = Color(0xFF4C4E67)
+                                            )
+
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            item {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp, horizontal = 12.dp)
+                                        .background(
+                                            Color(0xFFF5F5F5),
+                                            RoundedCornerShape(12.dp)
+                                        )
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .wrapContentHeight()
+                                            .shadow(
+                                                8.dp,
+                                                RoundedCornerShape(12.dp), clip = false
+                                            )
+                                            .background(Color.White, RoundedCornerShape(12.dp))
+                                            .padding(horizontal = 18.dp, vertical = 12.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "Total   - ",
+                                            fontSize = 20.sp,
+                                            fontFamily = Inter,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.Red
+                                        )
+
+                                        Text(
+                                            text = "$hours hr $minutes min",
+                                            fontSize = 20.sp,
+                                            fontFamily = Inter,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.Red
                                         )
                                     }
-                                    Text(
-                                        text = task.completedTime,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        fontFamily = Inter,
-                                        color = Color(0xFF4C4E67)
-                                    )
 
+                                    Spacer(Modifier.height(8.dp))
                                 }
-
-                            }
-                        }
-                    }
-
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp, horizontal = 12.dp)
-                                .background(
-                                    Color(0xFFF5F5F5),
-                                    RoundedCornerShape(12.dp)
-                                )
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentHeight()
-                                    .shadow(
-                                        8.dp,
-                                        RoundedCornerShape(12.dp), clip = false
-                                    )
-                                    .background(Color.White, RoundedCornerShape(12.dp))
-                                    .padding(horizontal = 18.dp, vertical = 12.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Total   - ",
-                                    fontSize = 20.sp,
-                                    fontFamily = Inter,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Color.Red
-                                )
-
-                                Text(
-                                    text = "$hours hr $minutes min",
-                                    fontSize = 20.sp,
-                                    fontFamily = Inter,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Color.Red
-                                )
                             }
 
-                            Spacer(Modifier.height(8.dp))
                         }
                     }
-
                 }
+
             }
+
         }
     }
 }
