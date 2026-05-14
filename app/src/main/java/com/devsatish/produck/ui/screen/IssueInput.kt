@@ -206,7 +206,7 @@ fun IssueInput(
                         Box(
                             modifier = Modifier
                                 .background(
-                                    color =if(task.second == "Expression") darkPink else darkBlue2,
+                                    color = darkBlue2,
                                     shape = RoundedCornerShape(12.dp)
                                 )
                         ) {

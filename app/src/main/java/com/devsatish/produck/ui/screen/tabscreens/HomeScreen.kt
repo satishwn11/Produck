@@ -96,7 +96,7 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
         enabled = shouldHandleBack
     ) {
         coroutineScope.launch {
-            listState.animateScrollToItem(0)
+            listState.scrollToItem(0)
         }
     }
 
