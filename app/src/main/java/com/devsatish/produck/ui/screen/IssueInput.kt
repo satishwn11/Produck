@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.devsatish.produck.ui.theme.darkBlue2
-import com.devsatish.produck.ui.theme.darkPink
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -200,7 +199,7 @@ fun IssueInput(
             expanded = expand,
             onDismissRequest = { expand = false }
         ) {
-            newList.forEach { task ->
+            newList.reversed().forEach { task ->
                 DropdownMenuItem(
                     text = {
                         Box(
