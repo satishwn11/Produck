@@ -87,6 +87,7 @@ fun WinsInput(
             )
         }
 
+        // Title TextField
         Card(
             shape = RoundedCornerShape(10.dp),
             elevation = CardDefaults.cardElevation(6.dp),
@@ -99,7 +100,6 @@ fun WinsInput(
             Box(
                 modifier = Modifier.padding(12.dp)
             ) {
-
                 BasicTextField(
                     value = winTitle,
                     onValueChange = { winTitle = it },
@@ -129,6 +129,7 @@ fun WinsInput(
             }
         }
 
+        // Detail TextField
         Card(
             shape = RoundedCornerShape(10.dp),
             elevation = CardDefaults.cardElevation(8.dp),
@@ -145,7 +146,7 @@ fun WinsInput(
                     onValueChange = { winDescription = it },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 120.dp, max = 150.dp),
+                        .heightIn(min = 120.dp, max = 250.dp),
                     textStyle = TextStyle(
                         fontSize = 18.sp,
                         lineHeight = 24.sp,
@@ -170,29 +171,34 @@ fun WinsInput(
             }
         }
 
-        Button(onClick = {
+        // Save button
+        Button(
+            onClick = {
 
-            if(winTitle.isNotEmpty() && winDescription.isNotEmpty() && win != "select category") {
-                timerViewModel.insertWin(
-                    category = win,
-                    title = winTitle,
-                    description = winDescription
-                )
-                focusManager.clearFocus()
-                navController.navigateUp()
-            } else {
-                Toast.makeText(context,"Please fill all 3 section",
-                    Toast.LENGTH_SHORT).show()
-            }
+                if (winTitle.isNotEmpty() && winDescription.isNotEmpty() && win != "select category") {
+                    timerViewModel.insertWin(
+                        category = win,
+                        title = winTitle,
+                        description = winDescription
+                    )
+                    focusManager.clearFocus()
+                    navController.navigateUp()
+                } else {
+                    Toast.makeText(
+                        context, "Please fill all 3 section",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
-        },
+            },
             shape = RoundedCornerShape(12.dp),
             contentPadding = PaddingValues(
                 horizontal = 12.dp,
                 vertical = 1.dp
             )
-            ) { Text("Save achievement") }
+        ) { Text("Save achievement") }
 
+        // Dropdown
         DropdownMenu(
             expanded = expand,
             onDismissRequest = { expand = false }
@@ -222,6 +228,31 @@ fun WinsInput(
                     }
                 )
             }
+
+            // Extra dropdown item
+            DropdownMenuItem(
+                text = {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = Color(0xFF1D8316),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                    ) {
+                        Text(
+                            text = "Expression",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.W500,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                        )
+                    }
+                },
+                onClick = {
+                    win = "Expression"
+                    expand = false
+                }
+            )
         }
     }
 }
