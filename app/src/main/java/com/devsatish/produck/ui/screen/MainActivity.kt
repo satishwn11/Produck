@@ -18,8 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import com.devsatish.produck.data.model.AppDatabase
+import com.devsatish.produck.data.repository.RoutineRepository
 import com.devsatish.produck.data.repository.SoundController
 import com.devsatish.produck.data.repository.TimerRepository
+import com.devsatish.produck.ui.viewmodel.RoutineViewModel
+import com.devsatish.produck.ui.viewmodel.RoutineViewModelFactory
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import com.devsatish.produck.ui.viewmodel.TimerViewModelFactory
 import com.devsatish.produck.utils.service.TimerForegroundService
@@ -29,6 +32,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var repository: TimerRepository
     private lateinit var timerViewModel: TimerViewModel
+    private lateinit var routineViewModel: RoutineViewModel
     private var isLoading = mutableStateOf(true)
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -71,6 +75,9 @@ class MainActivity : ComponentActivity() {
             database.winDao(),
             database.issueDao()
         )
+        val routineRepository = RoutineRepository(
+            database.routineDao()
+        )
 
         timerViewModel = ViewModelProvider(
             this,
@@ -79,6 +86,13 @@ class MainActivity : ComponentActivity() {
                 soundController = SoundController(this)
             )
         )[TimerViewModel::class.java]
+
+        routineViewModel = ViewModelProvider(
+            this,
+            RoutineViewModelFactory(
+                routineRepository
+            )
+        )[RoutineViewModel::class.java]
 
 
         val serviceIntent = Intent(this, TimerForegroundService::class.java)
@@ -104,7 +118,7 @@ class MainActivity : ComponentActivity() {
                 darkIcons = true
             )
 
-            RootNavigation(timerViewModel)
+            RootNavigation(timerViewModel, routineViewModel)
         }
 
     }

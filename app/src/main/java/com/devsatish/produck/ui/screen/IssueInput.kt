@@ -41,6 +41,16 @@ import androidx.navigation.NavHostController
 import com.devsatish.produck.ui.theme.darkBlue2
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 
+val routineList = listOf (
+    "6:00 - 7:00" to "Kotlin",
+    "7:00 - 8:00" to "Android app development",
+    "9:00 - 11:00" to  "Reasoning",
+    "11:00 - 12:30" to "GS",
+    "1:00 - 2:00" to  "Academic Study",
+    "6:00 - 9:00" to "Mathematics",
+    "9:00 - 10:00" to "GK"
+)
+
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
