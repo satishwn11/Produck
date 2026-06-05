@@ -12,9 +12,11 @@ import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import com.devsatish.produck.data.model.AppDatabase
@@ -25,10 +27,22 @@ import com.devsatish.produck.ui.viewmodel.RoutineViewModel
 import com.devsatish.produck.ui.viewmodel.RoutineViewModelFactory
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import com.devsatish.produck.ui.viewmodel.TimerViewModelFactory
+import com.devsatish.produck.utils.notification.AlarmScheduler
+import com.devsatish.produck.utils.notification.NotificationHelper
 import com.devsatish.produck.utils.service.TimerForegroundService
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
+
+    private val notificationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+
+            if (isGranted) {
+                AlarmScheduler.scheduleNextAlarm(this)
+            }
+        }
 
     private lateinit var repository: TimerRepository
     private lateinit var timerViewModel: TimerViewModel
@@ -109,6 +123,28 @@ class MainActivity : ComponentActivity() {
 
             override fun onServiceDisconnected(name: ComponentName?) {}
         }, BIND_AUTO_CREATE)
+
+        // notification permission
+        NotificationHelper.createChannel(this)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+
+                notificationPermissionLauncher.launch(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+            } else {
+                AlarmScheduler.scheduleNextAlarm(this)
+            }
+
+        } else {
+            AlarmScheduler.scheduleNextAlarm(this)
+        }
 
         setContent {
             val systemUiController = rememberSystemUiController()

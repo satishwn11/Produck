@@ -37,7 +37,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.devsatish.produck.navigation.Routes
+import com.devsatish.produck.utils.navigation.Routes
 import com.devsatish.produck.ui.screen.tabscreens.HomeScreen
 import com.devsatish.produck.ui.screen.tabscreens.IssueScreen
 import com.devsatish.produck.ui.screen.tabscreens.TimerScreen

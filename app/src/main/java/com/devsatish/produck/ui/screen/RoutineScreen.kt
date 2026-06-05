@@ -1,28 +1,6 @@
 package com.devsatish.produck.ui.screen
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import android.content.Context
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,34 +12,72 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devsatish.produck.data.model.routine.RoutineEntity
 import com.devsatish.produck.ui.viewmodel.RoutineViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+
+val Context.dataStore by preferencesDataStore(name = "goal_prefs")
+
+val GOAL_KEY = stringPreferencesKey("goal")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoutineScreen(
     viewModel: RoutineViewModel
 ) {
+
+    var showEditor by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    var goalText by remember { mutableStateOf("") }
+
+    val goalFlow = remember {
+        context.dataStore.data.map {
+            it[GOAL_KEY] ?: "Target?"
+        }
+    }
+
+    val goal by goalFlow.collectAsState(initial = "Write your target..")
+
 
     val routineList by viewModel.allRoutine
         .collectAsStateWithLifecycle(initialValue = emptyList())
@@ -195,16 +211,44 @@ fun RoutineScreen(
 
             Divider(thickness = 1.dp)
             Text(
-                text = "Goal - Clear the CHSL Exam",
+                text = goal,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 fontFamily = FontFamily.Serif,
-                modifier = Modifier
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
                     .padding(3.dp)
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Center
+                    .combinedClickable(
+                        onClick = {},
+                        onDoubleClick = {
+                            showEditor = !showEditor
+                        }
+                    )
             )
+
+            if(showEditor) {
+                TextField(
+                    value = goalText,
+                    onValueChange = { goalText = it },
+                    placeholder = {
+                        Text("Write..")
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Button(
+                    onClick = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            context.dataStore.edit { preferences ->
+                                preferences[GOAL_KEY] = goalText
+                            }
+                        }
+                    }
+                ) {
+                    Text("Save Goal")
+                }
+            }
             Divider(thickness = 1.dp)
 
             LazyColumn {
@@ -232,7 +276,11 @@ fun RoutineScreen(
 
                             ),
                         elevation = CardDefaults.cardElevation(6.dp),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors (
+                            containerColor = Color(0xFF5F74D5),
+                            contentColor = Color.White
+                        )
                     ) {
                         Row(
                             modifier = Modifier
@@ -243,14 +291,16 @@ fun RoutineScreen(
                             Text(
                                 text = "${routine.startTime} - ${routine.endTime}",
                                 modifier = Modifier.weight(1f),
-                                fontSize = 14.sp
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
                             )
 
                             // Right side → Task
                             Text(
                                 text = routine.title,
                                 modifier = Modifier.weight(1f),
-                                fontSize = 16.sp
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.W700
                             )
                         }
                     }
@@ -259,78 +309,3 @@ fun RoutineScreen(
         }
     }
 }
-
-
-//
-//@Composable
-//fun RoutineScreen() {
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(12.dp),
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//
-//        Text(
-//            text = "Goal - Clear the CHSL Exam",
-//            fontSize = 28.sp,
-//            fontWeight = FontWeight.Bold,
-//            color = Color.Black,
-//            fontFamily = FontFamily.Serif,
-//            modifier = Modifier.fillMaxWidth(),
-//            textAlign = TextAlign.Center
-//        )
-//
-//        Spacer(Modifier.height(12.dp))
-//
-//        Divider(thickness = 1.dp)
-//
-//        Spacer(Modifier.height(6.dp))
-//
-//        Text(
-//            text = "Routines",
-//            fontSize = 28.sp,
-//            fontWeight = FontWeight.Bold,
-//            color = Color.Black
-//        )
-//        Spacer(Modifier.height(8.dp))
-//
-//        routineList.forEach { it ->
-//            RoutineItemView(it)
-//        }
-//
-//    }
-//}
-//
-//@Composable
-//fun RoutineItemView(item: Pair<String, String>) {
-//
-//    Card(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(vertical = 6.dp),
-//        elevation = CardDefaults.cardElevation(6.dp),
-//        shape = RoundedCornerShape(12.dp)
-//    ) {
-//        Row(
-//            modifier = Modifier
-//                .padding(16.dp)
-//        ) {
-//
-//            // Left side → Time
-//            Text(
-//                text = item.first,
-//                modifier = Modifier.weight(1f),
-//                fontSize = 14.sp
-//            )
-//
-//            // Right side → Task
-//            Text(
-//                text = item.second,
-//                modifier = Modifier.weight(1f),
-//                fontSize = 16.sp
-//            )
-//        }
-//    }
-//}

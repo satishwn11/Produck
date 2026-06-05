@@ -1,4 +1,4 @@
-package com.devsatish.produck.navigation
+package com.devsatish.produck.utils.navigation
 
 object Routes {
     const val MAIN = "mainScreen"
