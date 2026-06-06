@@ -9,17 +9,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -49,6 +51,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devsatish.produck.data.model.routine.RoutineEntity
+import com.devsatish.produck.ui.screen.components.DeleteAlertDialog
 import com.devsatish.produck.ui.viewmodel.RoutineViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,12 +64,13 @@ val GOAL_KEY = stringPreferencesKey("goal")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoutineScreen(
-    viewModel: RoutineViewModel
-) {
+fun RoutineScreen(viewModel: RoutineViewModel) {
 
     var showEditor by remember { mutableStateOf(false) }
+    var showInput by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
+    // data store variables
     val context = LocalContext.current
     var goalText by remember { mutableStateOf("") }
 
@@ -75,10 +79,10 @@ fun RoutineScreen(
             it[GOAL_KEY] ?: "Target?"
         }
     }
-
     val goal by goalFlow.collectAsState(initial = "Write your target..")
 
 
+    // screen variables
     val routineList by viewModel.allRoutine
         .collectAsStateWithLifecycle(initialValue = emptyList())
 
@@ -87,23 +91,35 @@ fun RoutineScreen(
     var startTime by remember { mutableStateOf("") }
     var endTime by remember { mutableStateOf("") }
 
-    var show by remember { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedItem by remember { mutableStateOf<RoutineEntity?>(null) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Routine")
+                    Text(
+                        "Routine",
+                        fontWeight = FontWeight.Bold
+                    )
                 },
                 actions = {
                     IconButton(onClick = {
-                        show = !show
+                        showInput = !showInput
                     }) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null
-                        )
+                        if (showInput) {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
                     }
                 }
             )
@@ -114,10 +130,10 @@ fun RoutineScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
         ) {
 
-            if (show) {
+            if (showInput) {
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -169,7 +185,7 @@ fun RoutineScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 if (id == 0) {
                     Button(
@@ -206,10 +222,10 @@ fun RoutineScreen(
                         Text("Update Item")
                     }
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
             }
 
-            Divider(thickness = 1.dp)
+            HorizontalDivider(thickness = 1.dp)
             Text(
                 text = goal,
                 fontSize = 28.sp,
@@ -217,8 +233,9 @@ fun RoutineScreen(
                 color = Color.Black,
                 fontFamily = FontFamily.Serif,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-                    .padding(3.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
                     .combinedClickable(
                         onClick = {},
                         onDoubleClick = {
@@ -227,7 +244,7 @@ fun RoutineScreen(
                     )
             )
 
-            if(showEditor) {
+            if (showEditor) {
                 TextField(
                     value = goalText,
                     onValueChange = { goalText = it },
@@ -244,12 +261,30 @@ fun RoutineScreen(
                                 preferences[GOAL_KEY] = goalText
                             }
                         }
-                    }
+                    },
+                    modifier = Modifier.padding(3.dp)
                 ) {
                     Text("Save Goal")
                 }
             }
-            Divider(thickness = 1.dp)
+            HorizontalDivider(thickness = 1.dp)
+            Spacer(Modifier.height(7.dp))
+
+            DeleteAlertDialog(
+                showDialog = showDialog,
+                title = selectedItem?.title ?: "",
+                onCancel = {
+                    selectedItem = null
+                    showDialog = false
+                },
+                onDelete = {
+                    selectedItem?.let {
+                        viewModel.deleteItem(it)
+                    }
+                    selectedItem = null
+                    showDialog = false
+                }
+            )
 
             LazyColumn {
 
@@ -262,22 +297,22 @@ fun RoutineScreen(
                             .combinedClickable(
 
                                 onDoubleClick = {
-                                    viewModel.deleteItem(routine)
+                                    selectedItem = routine
+                                    showDialog = true
                                 },
-//                                    onLongClick = {  },
-                                onClick = {
+                                onLongClick = {
                                     id = routine.id
                                     startTime = routine.startTime
                                     endTime = routine.endTime
                                     title = routine.title
 
-                                    show = true
-                                }
-
+                                    showInput = true
+                                },
+                                onClick = {}
                             ),
                         elevation = CardDefaults.cardElevation(6.dp),
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors (
+                        colors = CardDefaults.cardColors(
                             containerColor = Color(0xFF5F74D5),
                             contentColor = Color.White
                         )
