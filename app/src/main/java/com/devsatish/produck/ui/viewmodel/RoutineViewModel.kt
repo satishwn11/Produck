@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.devsatish.produck.data.model.routine.RoutineEntity
 import com.devsatish.produck.data.repository.RoutineRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class RoutineViewModel(
@@ -12,6 +15,18 @@ class RoutineViewModel(
 ) : ViewModel() {
 
     val allRoutine: Flow<List<RoutineEntity>> = repository.allRoutine
+
+    val goal = repository.getGoal().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = "Loading.."
+    )
+
+    fun saveGoal(goal: String) {
+        viewModelScope.launch {
+            repository.saveGoal(goal)
+        }
+    }
 
     fun addRoutine(
         startTime: String,

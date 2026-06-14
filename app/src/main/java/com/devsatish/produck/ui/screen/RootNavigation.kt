@@ -31,7 +31,7 @@ fun RootNavigation(
             WinsInput(navController, timerViewModel)
         }
         composable(Routes.ISSUE_INPUT) {
-            IssueInput(navController, timerViewModel)
+            IssueInput(navController, timerViewModel, routineViewModel)
         }
         composable(Routes.ROUTINE) {
             RoutineScreen(routineViewModel)

@@ -1,6 +1,5 @@
 package com.devsatish.produck.ui.screen
 
-import android.content.Context
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -46,21 +44,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devsatish.produck.data.model.routine.RoutineEntity
 import com.devsatish.produck.ui.screen.components.DeleteAlertDialog
 import com.devsatish.produck.ui.viewmodel.RoutineViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-
-val Context.dataStore by preferencesDataStore(name = "goal_prefs")
-
-val GOAL_KEY = stringPreferencesKey("goal")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,12 +61,7 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
     val context = LocalContext.current
     var goalText by remember { mutableStateOf("") }
 
-    val goalFlow = remember {
-        context.dataStore.data.map {
-            it[GOAL_KEY] ?: "Target?"
-        }
-    }
-    val goal by goalFlow.collectAsState(initial = "Write your target..")
+    val goal by viewModel.goal.collectAsStateWithLifecycle()
 
 
     // screen variables
@@ -225,6 +207,7 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
+            // Data store value UI Text
             HorizontalDivider(thickness = 1.dp)
             Text(
                 text = goal,
@@ -244,6 +227,7 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
                     )
             )
 
+            // Goal TextField
             if (showEditor) {
                 TextField(
                     value = goalText,
@@ -256,11 +240,7 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
 
                 Button(
                     onClick = {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            context.dataStore.edit { preferences ->
-                                preferences[GOAL_KEY] = goalText
-                            }
-                        }
+                        viewModel.saveGoal(goalText)
                     },
                     modifier = Modifier.padding(3.dp)
                 ) {

@@ -37,26 +37,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.devsatish.produck.ui.theme.darkBlue2
+import com.devsatish.produck.ui.viewmodel.RoutineViewModel
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
-
-val routineList = listOf (
-    "6:00 - 7:00" to "Kotlin",
-    "7:00 - 8:00" to "Android app development",
-    "9:00 - 11:00" to  "Reasoning",
-    "11:00 - 12:30" to "GS",
-    "1:00 - 2:00" to  "Academic Study",
-    "6:00 - 9:00" to "Mathematics",
-    "9:00 - 10:00" to "GK"
-)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IssueInput(
     navController: NavHostController,
-    timerViewModel: TimerViewModel
+    timerViewModel: TimerViewModel,
+    routineViewModel: RoutineViewModel
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -66,7 +59,7 @@ fun IssueInput(
     var issueDescription by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    val newList = routineList + ("9:30 - 10:20" to "Expression")
+    val routineTitles by routineViewModel.allRoutine.collectAsStateWithLifecycle(emptyList())
 
     Column(
         modifier = Modifier
@@ -75,7 +68,7 @@ fun IssueInput(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
-        // category list
+        // open dropdown click box
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
@@ -91,7 +84,7 @@ fun IssueInput(
             )
         }
 
-        // title box
+        // title text field
         Card(
             shape = RoundedCornerShape(10.dp),
             elevation = CardDefaults.cardElevation(6.dp),
@@ -134,6 +127,8 @@ fun IssueInput(
             }
         }
 
+
+        // Description text field
         Card(
             shape = RoundedCornerShape(10.dp),
             elevation = CardDefaults.cardElevation(8.dp),
@@ -175,9 +170,9 @@ fun IssueInput(
             }
         }
 
+        // item save button
         Button(
             onClick = {
-
                 if (
                     issueTitle.isNotEmpty()
                     && issueDescription.isNotEmpty()
@@ -205,11 +200,12 @@ fun IssueInput(
             )
         ) { Text("Save Issue") }
 
+        // actual dropdown
         DropdownMenu(
             expanded = expand,
             onDismissRequest = { expand = false }
         ) {
-            newList.reversed().forEach { task ->
+            routineTitles.reversed().forEach {
                 DropdownMenuItem(
                     text = {
                         Box(
@@ -220,7 +216,7 @@ fun IssueInput(
                                 )
                         ) {
                             Text(
-                                text = task.second,
+                                text = it.title,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.W500,
                                 color = Color.White,
@@ -229,11 +225,34 @@ fun IssueInput(
                         }
                     },
                     onClick = {
-                        issueCategory = task.second
+                        issueCategory = it.title
                         expand = false
                     }
                 )
             }
+            DropdownMenuItem(
+                text = {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = Color.White,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                    ) {
+                        Text(
+                            text = "Expression",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.W500,
+                            color = Color.Black,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                        )
+                    }
+                },
+                onClick = {
+                    issueCategory = "Expression"
+                    expand = false
+                }
+            )
         }
     }
 }

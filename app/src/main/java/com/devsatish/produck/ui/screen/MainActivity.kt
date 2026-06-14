@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import com.devsatish.produck.data.model.AppDatabase
+import com.devsatish.produck.data.model.datastore.GoalDataStore
 import com.devsatish.produck.data.repository.RoutineRepository
 import com.devsatish.produck.data.repository.SoundController
 import com.devsatish.produck.data.repository.TimerRepository
@@ -80,7 +81,7 @@ class MainActivity : ComponentActivity() {
             setShowBadge(false)
         }
 
-        val manager = getSystemService(NotificationManager::class.java)
+        val manager = applicationContext.getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(channel)
 
         val database = AppDatabase.getDatabase(this)
@@ -88,9 +89,6 @@ class MainActivity : ComponentActivity() {
             database.taskDao(),
             database.winDao(),
             database.issueDao()
-        )
-        val routineRepository = RoutineRepository(
-            database.routineDao()
         )
 
         timerViewModel = ViewModelProvider(
@@ -100,6 +98,11 @@ class MainActivity : ComponentActivity() {
                 soundController = SoundController(this)
             )
         )[TimerViewModel::class.java]
+
+        val routineRepository = RoutineRepository(
+            dao = database.routineDao(),
+            goalDataStore = GoalDataStore(applicationContext)
+        )
 
         routineViewModel = ViewModelProvider(
             this,
