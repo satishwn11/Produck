@@ -6,8 +6,8 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.devsatish.produck.ui.screen.MainActivity
 import com.devsatish.produck.R
+import com.devsatish.produck.ui.screen.MainActivity
 
 class TimerForegroundService : Service() {
 
@@ -24,6 +24,7 @@ class TimerForegroundService : Service() {
         val color = if (running) 0xFF00C853.toInt() else 0xFFFFAB00.toInt()
 
         val intent = Intent(this, MainActivity::class.java).apply {
+            putExtra("screen", "timer")
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP or
                     Intent.FLAG_ACTIVITY_SINGLE_TOP

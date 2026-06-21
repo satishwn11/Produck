@@ -17,6 +17,6 @@ val darkBlue2 = Color(0xFF2C0C8D)
 
 val darkYellow = Color(0xFFFBFF18)
 val darkPink = Color(0xFFD1386F)
-val wingreen = Color(0xFF259119)
+val winGreen= Color(0xFF1D8316)
 val windarkgreen = Color(0xFF113902)
 

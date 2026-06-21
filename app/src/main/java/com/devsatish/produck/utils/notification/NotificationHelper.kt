@@ -17,9 +17,7 @@ object NotificationHelper {
                 NotificationManager.IMPORTANCE_HIGH
             )
 
-            val manager =
-                context.getSystemService(NotificationManager::class.java)
-
+            val manager = context.getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(channel)
         }
     }

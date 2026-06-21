@@ -6,15 +6,17 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.devsatish.produck.utils.navigation.Routes
 import com.devsatish.produck.ui.viewmodel.RoutineViewModel
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
+import com.devsatish.produck.utils.navigation.Routes
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RootNavigation(
     timerViewModel: TimerViewModel,
-    routineViewModel: RoutineViewModel
+    routineViewModel: RoutineViewModel,
+    screen: String?,
+    onNavigateConsumed: () -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -23,7 +25,7 @@ fun RootNavigation(
         startDestination = Routes.MAIN
     ) {
         composable(Routes.MAIN) {
-            MainScreen(navController, timerViewModel)
+            MainScreen(navController, timerViewModel, screen, onNavigateConsumed)
         }
 
         // Inner Screens

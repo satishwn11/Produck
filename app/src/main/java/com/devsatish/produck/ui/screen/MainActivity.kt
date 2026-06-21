@@ -36,19 +36,15 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 class MainActivity : ComponentActivity() {
 
     private val notificationPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
+        registerForActivityResult(ActivityResultContracts.RequestPermission()
         ) { isGranted ->
-
-            if (isGranted) {
-                AlarmScheduler.scheduleNextAlarm(this)
-            }
-        }
+            if (isGranted) { AlarmScheduler.scheduleNextAlarm(this) } }
 
     private lateinit var repository: TimerRepository
     private lateinit var timerViewModel: TimerViewModel
     private lateinit var routineViewModel: RoutineViewModel
     private var isLoading = mutableStateOf(true)
+    private var screen = mutableStateOf<String?>(null)
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,12 +68,9 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val channel = NotificationChannel(
-            "timer_channel",
-            "Focus Timer",
+        val channel = NotificationChannel("timer_channel", "Focus Timer",
             NotificationManager.IMPORTANCE_LOW
-        ).apply {
-            description = "Shows running focus timer"
+        ).apply { description = "Shows running focus timer"
             setShowBadge(false)
         }
 
@@ -86,87 +79,67 @@ class MainActivity : ComponentActivity() {
 
         val database = AppDatabase.getDatabase(this)
         repository = TimerRepository(
-            database.taskDao(),
-            database.winDao(),
-            database.issueDao()
-        )
+            database.taskDao(), database.winDao(), database.issueDao())
 
-        timerViewModel = ViewModelProvider(
-            this,
-            TimerViewModelFactory(
-                repository,
+        timerViewModel = ViewModelProvider(this,
+            TimerViewModelFactory(repository,
                 soundController = SoundController(this)
-            )
-        )[TimerViewModel::class.java]
+            )) [TimerViewModel::class.java]
 
         val routineRepository = RoutineRepository(
             dao = database.routineDao(),
-            goalDataStore = GoalDataStore(applicationContext)
-        )
+            goalDataStore = GoalDataStore(applicationContext))
 
-        routineViewModel = ViewModelProvider(
-            this,
-            RoutineViewModelFactory(
-                routineRepository
-            )
-        )[RoutineViewModel::class.java]
+        routineViewModel = ViewModelProvider(this, RoutineViewModelFactory(
+                routineRepository)) [RoutineViewModel::class.java]
 
 
         val serviceIntent = Intent(this, TimerForegroundService::class.java)
         startService(serviceIntent)
-
         bindService(serviceIntent, object : ServiceConnection {
-
             override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
                 val service = (binder as TimerForegroundService.LocalBinder).getService()
                 timerViewModel.attachService(service)
 
-                 isLoading.value = false
+                isLoading.value = false
             }
-
             override fun onServiceDisconnected(name: ComponentName?) {}
         }, BIND_AUTO_CREATE)
 
+
         // notification permission
         NotificationHelper.createChannel(this)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED) {
 
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else { AlarmScheduler.scheduleNextAlarm(this) }
+        } else { AlarmScheduler.scheduleNextAlarm(this) }
 
-                notificationPermissionLauncher.launch(
-                    Manifest.permission.POST_NOTIFICATIONS
-                )
-            } else {
-                AlarmScheduler.scheduleNextAlarm(this)
-            }
-
-        } else {
-            AlarmScheduler.scheduleNextAlarm(this)
-        }
+        // testing
+        screen.value = intent?.getStringExtra("screen")
 
         setContent {
             val systemUiController = rememberSystemUiController()
+            systemUiController.setSystemBarsColor(color = Color(0xFFFAF4FF), darkIcons = true)
 
-            systemUiController.setSystemBarsColor(
-                color = Color(0xFFFAF4FF),
-                darkIcons = true
-            )
-
-            RootNavigation(timerViewModel, routineViewModel)
-        }
-
-    }
+            RootNavigation(
+                timerViewModel = timerViewModel, routineViewModel = routineViewModel,
+                screen = screen.value, onNavigateConsumed = { screen.value = null }
+            ) } }
 
     override fun onDestroy() {
         super.onDestroy()
 
         val stopIntent = Intent(this, TimerForegroundService::class.java)
-        stopService(stopIntent)
+        stopService(stopIntent) }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        setIntent(intent)
+        screen.value = intent.getStringExtra("screen")
     }
 
 }

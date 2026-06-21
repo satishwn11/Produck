@@ -47,9 +47,7 @@ import com.devsatish.produck.ui.viewmodel.TimerViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IssueInput(
-    navController: NavHostController,
-    timerViewModel: TimerViewModel,
-    routineViewModel: RoutineViewModel
+    navController: NavHostController, timerViewModel: TimerViewModel, routineViewModel: RoutineViewModel
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -62,62 +60,42 @@ fun IssueInput(
     val routineTitles by routineViewModel.allRoutine.collectAsStateWithLifecycle(emptyList())
 
     Column(
-        modifier = Modifier
-            .padding(12.dp)
-            .fillMaxSize(),
+        modifier = Modifier.padding(12.dp).fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
-        // open dropdown click box
+        // Open dropdown click box
         Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(Color.LightGray)
-                .clickable { expand = true }
+            modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                .background(Color.LightGray).clickable { expand = true }
                 .padding(horizontal = 8.dp, vertical = 5.dp)
         ) {
             Text(
-                text = issueCategory,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                text = issueCategory, fontSize = 16.sp, fontWeight = FontWeight.Bold,
                 color = Color(0xFF1565C0)
             )
         }
 
         // title text field
         Card(
-            shape = RoundedCornerShape(10.dp),
-            elevation = CardDefaults.cardElevation(6.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Black
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
+            shape = RoundedCornerShape(10.dp), elevation = CardDefaults.cardElevation(6.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.Black),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Box(
-                modifier = Modifier.padding(12.dp)
-            ) {
+            Box(modifier = Modifier.padding(12.dp)) {
 
-                BasicTextField(
-                    value = issueTitle,
-                    onValueChange = { issueTitle = it },
+                BasicTextField(value = issueTitle, onValueChange = { issueTitle = it },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        fontSize = 26.sp, fontWeight = FontWeight.Bold, color = Color.White
                     ),
                     singleLine = true,
                     cursorBrush = SolidColor(Color.Yellow),
                     decorationBox = { innerTextField ->
 
-                        Box {
-                            if (issueTitle.isEmpty()) {
-                                Text(
-                                    text = "Enter title...",
-                                    fontSize = 28.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                        Box { if (issueTitle.isEmpty()) {
+                                Text(text = "Enter title...", fontSize = 28.sp,
+                                    fontWeight = FontWeight.Bold, color = Color.White
                                 )
                             }
                             innerTextField()
@@ -230,21 +208,13 @@ fun IssueInput(
                     }
                 )
             }
-            DropdownMenuItem(
-                text = {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                color = Color.White,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                    ) {
+            DropdownMenuItem(text = { Box( modifier = Modifier.background(color = Color.White,
+                                shape = RoundedCornerShape(12.dp))) {
                         Text(
-                            text = "Expression",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.W500,
+                            text = "Expression", fontSize = 20.sp, fontWeight = FontWeight.W500,
                             color = Color.Black,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
                 },

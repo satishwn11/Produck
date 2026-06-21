@@ -18,7 +18,7 @@ class ReminderReceiver : BroadcastReceiver() {
             context,
             "daily_reminder_channel"
         )
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(android.R.drawable.checkbox_on_background)
             .setContentTitle("Reminder")
             .setContentText("It's time to analyze your day!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)

@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.devsatish.produck.ui.theme.winGreen
 import com.devsatish.produck.ui.viewmodel.TimerViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -209,7 +210,7 @@ fun WinsInput(
                         Box(
                             modifier = Modifier
                                 .background(
-                                    color = Color(0xFF1D8316),
+                                    color = winGreen,
                                     shape = RoundedCornerShape(12.dp)
                                 )
                         ) {
@@ -235,7 +236,7 @@ fun WinsInput(
                     Box(
                         modifier = Modifier
                             .background(
-                                color = Color(0xFF1D8316),
+                                color = Color.White,
                                 shape = RoundedCornerShape(12.dp)
                             )
                     ) {
@@ -243,7 +244,7 @@ fun WinsInput(
                             text = "Expression",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.W500,
-                            color = Color.White,
+                            color = Color.Black,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
