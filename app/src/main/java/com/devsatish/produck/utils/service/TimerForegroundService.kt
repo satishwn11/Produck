@@ -17,7 +17,7 @@ class TimerForegroundService : Service() {
 
     private val binder = LocalBinder()
 
-    override fun onBind(intent: Intent?): IBinder? = binder
+    override fun onBind(intent: Intent?): IBinder = binder
 
     fun show(title: String, running: Boolean) {
         val status = if (running) "Running" else "Paused"

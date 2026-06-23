@@ -1,4 +1,4 @@
-package com.devsatish.produck.ui.viewmodel
+package com.devsatish.produck.ui.viewmodel.routineviewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,7 +6,6 @@ import com.devsatish.produck.data.model.routine.RoutineEntity
 import com.devsatish.produck.data.repository.RoutineRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -18,7 +17,7 @@ class RoutineViewModel(
 
     val goal = repository.getGoal().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Companion.WhileSubscribed(5000),
         initialValue = "Loading.."
     )
 

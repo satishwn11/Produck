@@ -7,7 +7,6 @@ import android.content.Intent
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.devsatish.produck.R
 
 class ReminderReceiver : BroadcastReceiver() {
 
@@ -18,7 +17,7 @@ class ReminderReceiver : BroadcastReceiver() {
             context,
             "daily_reminder_channel"
         )
-            .setSmallIcon(android.R.drawable.checkbox_on_background)
+            .setSmallIcon(android.R.drawable.ic_input_add)
             .setContentTitle("Reminder")
             .setContentText("It's time to analyze your day!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)

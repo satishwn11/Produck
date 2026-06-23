@@ -1,4 +1,4 @@
-package com.devsatish.produck.ui.viewmodel
+package com.devsatish.produck.ui.viewmodel.timerviewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.text.format
 
 class TimerViewModel(
     private val repository: TimerRepository,
@@ -90,7 +91,6 @@ class TimerViewModel(
 
                 val currentTime = System.currentTimeMillis()
                 elapsedSeconds = ((currentTime - startTime) / 1000).toInt()
-//                Log.i("Check", "elapsedSeconds: $elapsedSeconds, targetSeconds: $targetSeconds")
 
                 if (elapsedSeconds == targetSeconds) {
                     soundController.playBell()

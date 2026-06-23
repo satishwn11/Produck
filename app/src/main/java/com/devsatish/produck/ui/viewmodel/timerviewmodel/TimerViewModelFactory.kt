@@ -1,4 +1,4 @@
-package com.devsatish.produck.ui.viewmodel
+package com.devsatish.produck.ui.viewmodel.timerviewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,4 +14,3 @@ class TimerViewModelFactory(
         return TimerViewModel(repository, soundController) as T
     }
 }
-

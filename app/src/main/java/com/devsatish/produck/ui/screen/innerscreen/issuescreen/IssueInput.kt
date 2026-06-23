@@ -1,4 +1,4 @@
-package com.devsatish.produck.ui.screen
+package com.devsatish.produck.ui.screen.innerscreen.issuescreen
 
 import android.os.Build
 import android.widget.Toast
@@ -20,9 +20,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,90 +37,65 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.devsatish.produck.ui.theme.winGreen
-import com.devsatish.produck.ui.viewmodel.TimerViewModel
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import com.devsatish.produck.ui.theme.darkBlue2
+import com.devsatish.produck.ui.viewmodel.routineviewmodel.RoutineViewModel
+import com.devsatish.produck.ui.viewmodel.timerviewmodel.TimerViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WinsInput(
-    navController: NavHostController,
-    timerViewModel: TimerViewModel
+fun IssueInput(
+    navController: NavHostController, timerViewModel: TimerViewModel, routineViewModel: RoutineViewModel
 ) {
-
-    val completedList by timerViewModel.completedTasks.collectAsState()
     val focusManager = LocalFocusManager.current
 
     var expand by remember { mutableStateOf(false) }
-    var win by remember { mutableStateOf("select category") }
-    var winTitle by remember { mutableStateOf("") }
-    var winDescription by remember { mutableStateOf("") }
+    var issueCategory by remember { mutableStateOf("select category") }
+    var issueTitle by remember { mutableStateOf("") }
+    var issueDescription by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    val today = LocalDate.now()
-    val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH)
-    val formattedDate = today.format(formatter)
-
-    val todayWins = completedList.filter { it.completedDate == formattedDate }
+    val routineTitles by routineViewModel.allRoutine.collectAsStateWithLifecycle(emptyList())
 
     Column(
-        modifier = Modifier
-            .padding(12.dp)
-            .fillMaxSize(),
+        modifier = Modifier.padding(12.dp).fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
+        // Open dropdown click box
         Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(Color.LightGray)
-                .clickable { expand = true }
+            modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                .background(Color.LightGray).clickable { expand = true }
                 .padding(horizontal = 8.dp, vertical = 5.dp)
         ) {
             Text(
-                text = win,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                text = issueCategory, fontSize = 16.sp, fontWeight = FontWeight.Bold,
                 color = Color(0xFF1565C0)
             )
         }
 
-        // Title TextField
+        // title text field
         Card(
-            shape = RoundedCornerShape(10.dp),
-            elevation = CardDefaults.cardElevation(6.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Black
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
+            shape = RoundedCornerShape(10.dp), elevation = CardDefaults.cardElevation(6.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.Black),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Box(
-                modifier = Modifier.padding(12.dp)
-            ) {
-                BasicTextField(
-                    value = winTitle,
-                    onValueChange = { winTitle = it },
+            Box(modifier = Modifier.padding(12.dp)) {
+
+                BasicTextField(value = issueTitle, onValueChange = { issueTitle = it },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        fontSize = 26.sp, fontWeight = FontWeight.Bold, color = Color.White
                     ),
                     singleLine = true,
                     cursorBrush = SolidColor(Color.Yellow),
                     decorationBox = { innerTextField ->
 
-                        Box {
-                            if (winTitle.isEmpty()) {
-                                Text(
-                                    text = "Enter title...",
-                                    fontSize = 26.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                        Box { if (issueTitle.isEmpty()) {
+                                Text(text = "Enter title...", fontSize = 28.sp,
+                                    fontWeight = FontWeight.Bold, color = Color.White
                                 )
                             }
                             innerTextField()
@@ -130,7 +105,8 @@ fun WinsInput(
             }
         }
 
-        // Detail TextField
+
+        // Description text field
         Card(
             shape = RoundedCornerShape(10.dp),
             elevation = CardDefaults.cardElevation(8.dp),
@@ -139,26 +115,26 @@ fun WinsInput(
                 .fillMaxWidth()
         ) {
             Box(
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier
+                    .padding(12.dp)
             ) {
 
                 BasicTextField(
-                    value = winDescription,
-                    onValueChange = { winDescription = it },
+                    value = issueDescription,
+                    onValueChange = { issueDescription = it },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 120.dp, max = 250.dp),
+                        .heightIn(min = 120.dp, max = 150.dp),
                     textStyle = TextStyle(
                         fontSize = 18.sp,
                         lineHeight = 24.sp,
                         color = Color.DarkGray
                     ),
                     maxLines = 6,
-                    cursorBrush = SolidColor(Color(0xFF1565C0)),
                     decorationBox = { innerTextField ->
 
                         Box {
-                            if (winDescription.isEmpty()) {
+                            if (issueDescription.isEmpty()) {
                                 Text(
                                     text = "Write in detail...",
                                     fontSize = 18.sp,
@@ -172,15 +148,18 @@ fun WinsInput(
             }
         }
 
-        // Save button
+        // item save button
         Button(
             onClick = {
-
-                if (winTitle.isNotEmpty() && winDescription.isNotEmpty() && win != "select category") {
-                    timerViewModel.insertWin(
-                        category = win,
-                        title = winTitle,
-                        description = winDescription
+                if (
+                    issueTitle.isNotEmpty()
+                    && issueDescription.isNotEmpty()
+                    && issueCategory != "select category"
+                ) {
+                    timerViewModel.insertIssue(
+                        category = issueCategory,
+                        title = issueTitle,
+                        description = issueDescription
                     )
                     focusManager.clearFocus()
                     navController.navigateUp()
@@ -190,32 +169,32 @@ fun WinsInput(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
             },
+
             shape = RoundedCornerShape(12.dp),
             contentPadding = PaddingValues(
                 horizontal = 12.dp,
                 vertical = 1.dp
             )
-        ) { Text("Save achievement") }
+        ) { Text("Save Issue") }
 
-        // Dropdown
+        // actual dropdown
         DropdownMenu(
             expanded = expand,
             onDismissRequest = { expand = false }
         ) {
-            todayWins.forEach { task ->
+            routineTitles.reversed().forEach {
                 DropdownMenuItem(
                     text = {
                         Box(
                             modifier = Modifier
                                 .background(
-                                    color = winGreen,
+                                    color = darkBlue2,
                                     shape = RoundedCornerShape(12.dp)
                                 )
                         ) {
                             Text(
-                                text = task.title,
+                                text = it.title,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.W500,
                                 color = Color.White,
@@ -224,33 +203,23 @@ fun WinsInput(
                         }
                     },
                     onClick = {
-                        win = task.title
+                        issueCategory = it.title
                         expand = false
                     }
                 )
             }
-
-            // Extra dropdown item
-            DropdownMenuItem(
-                text = {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                color = Color.White,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                    ) {
+            DropdownMenuItem(text = { Box( modifier = Modifier.background(color = Color.White,
+                                shape = RoundedCornerShape(12.dp))) {
                         Text(
-                            text = "Expression",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.W500,
+                            text = "Expression", fontSize = 20.sp, fontWeight = FontWeight.W500,
                             color = Color.Black,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
                 },
                 onClick = {
-                    win = "Expression"
+                    issueCategory = "Expression"
                     expand = false
                 }
             )

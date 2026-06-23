@@ -1,4 +1,4 @@
-package com.devsatish.produck.ui.screen.components
+package com.devsatish.produck.ui.screen.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

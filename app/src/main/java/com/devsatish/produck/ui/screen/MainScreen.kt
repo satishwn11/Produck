@@ -1,7 +1,6 @@
 package com.devsatish.produck.ui.screen
 
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -39,15 +38,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.devsatish.produck.utils.navigation.Routes
-import com.devsatish.produck.ui.screen.tabscreens.HomeScreen
-import com.devsatish.produck.ui.screen.tabscreens.IssueScreen
-import com.devsatish.produck.ui.screen.tabscreens.TimerScreen
-import com.devsatish.produck.ui.screen.tabscreens.WinsScreen
+import com.devsatish.produck.ui.screen.tabscreens.hometab.HomeScreen
+import com.devsatish.produck.ui.screen.tabscreens.issuetab.IssueScreen
+import com.devsatish.produck.ui.screen.tabscreens.timertab.TimerScreen
+import com.devsatish.produck.ui.screen.tabscreens.winstab.WinsScreen
 import com.devsatish.produck.ui.theme.Inter
 import com.devsatish.produck.ui.theme.themeColor
-import com.devsatish.produck.ui.viewmodel.TimerViewModel
+import com.devsatish.produck.ui.viewmodel.timerviewmodel.TimerViewModel
 import com.devsatish.produck.utils.navigation.BottomNavItems
+import com.devsatish.produck.utils.navigation.Routes
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -70,9 +69,7 @@ fun MainScreen(
 
     LaunchedEffect(screen) {
         if (screen == "timer") {
-            Log.i("Tag", "Navigating to timer screen")
             tabController.navigate(BottomNavItems.Timer.route) {
-                // Ensure we don't build up a large stack and handle state correctly
                 popUpTo(BottomNavItems.Home.route) { saveState = true }
                 launchSingleTop = true
                 restoreState = true
@@ -161,19 +158,15 @@ fun MainScreen(
                 modifier = Modifier.padding(paddingValues)
             ) {
                 composable(BottomNavItems.Home.route) {
-                    Log.i("Tag", "Home Opened")
-                    HomeScreen(timerViewModel1)
+                    HomeScreen(tabController,timerViewModel1)
                 }
                 composable(BottomNavItems.Timer.route) {
-                    Log.i("Tag", "Timer Opened")
                     TimerScreen(tabController, timerViewModel1)
                 }
                 composable(BottomNavItems.Wins.route) {
-                    Log.i("Tag", "Wins Opened")
                     WinsScreen(navController, timerViewModel1)
                 }
                 composable(BottomNavItems.Issue.route) {
-                    Log.i("Tag", "Issue Opened")
                     IssueScreen(navController, timerViewModel1)
                 }
             }

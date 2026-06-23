@@ -1,4 +1,4 @@
-package com.devsatish.produck.ui.screen
+package com.devsatish.produck.ui.screen.innerscreen.routine
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
@@ -46,8 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devsatish.produck.data.model.routine.RoutineEntity
-import com.devsatish.produck.ui.screen.components.DeleteAlertDialog
-import com.devsatish.produck.ui.viewmodel.RoutineViewModel
+import com.devsatish.produck.ui.screen.common.DeleteAlertDialog
+import com.devsatish.produck.ui.viewmodel.routineviewmodel.RoutineViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

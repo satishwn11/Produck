@@ -1,4 +1,4 @@
-package com.devsatish.produck.ui.screen.tabscreens
+package com.devsatish.produck.ui.screen.tabscreens.issuetab
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -45,9 +45,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.devsatish.produck.R
 import com.devsatish.produck.data.model.issue.IssueEntity
-import com.devsatish.produck.ui.screen.components.DeleteAlertDialog
+import com.devsatish.produck.ui.screen.common.DeleteAlertDialog
 import com.devsatish.produck.ui.theme.TitleGreet2
-import com.devsatish.produck.ui.viewmodel.TimerViewModel
+import com.devsatish.produck.ui.viewmodel.timerviewmodel.TimerViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

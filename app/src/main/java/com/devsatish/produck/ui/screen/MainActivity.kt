@@ -24,10 +24,10 @@ import com.devsatish.produck.data.model.datastore.GoalDataStore
 import com.devsatish.produck.data.repository.RoutineRepository
 import com.devsatish.produck.data.repository.SoundController
 import com.devsatish.produck.data.repository.TimerRepository
-import com.devsatish.produck.ui.viewmodel.RoutineViewModel
-import com.devsatish.produck.ui.viewmodel.RoutineViewModelFactory
-import com.devsatish.produck.ui.viewmodel.TimerViewModel
-import com.devsatish.produck.ui.viewmodel.TimerViewModelFactory
+import com.devsatish.produck.ui.viewmodel.routineviewmodel.RoutineViewModel
+import com.devsatish.produck.ui.viewmodel.routineviewmodel.RoutineViewModelFactory
+import com.devsatish.produck.ui.viewmodel.timerviewmodel.TimerViewModel
+import com.devsatish.produck.ui.viewmodel.timerviewmodel.TimerViewModelFactory
 import com.devsatish.produck.utils.notification.AlarmScheduler
 import com.devsatish.produck.utils.notification.NotificationHelper
 import com.devsatish.produck.utils.service.TimerForegroundService

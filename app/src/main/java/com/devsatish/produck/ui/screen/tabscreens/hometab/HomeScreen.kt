@@ -1,4 +1,4 @@
-package com.devsatish.produck.ui.screen.tabscreens
+package com.devsatish.produck.ui.screen.tabscreens.hometab
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavController
 import com.devsatish.produck.R
 import com.devsatish.produck.ui.theme.Inter
 import com.devsatish.produck.ui.theme.TitleGreet
@@ -64,12 +65,13 @@ import com.devsatish.produck.ui.theme.TitleGreet2
 import com.devsatish.produck.ui.theme.darkBlue
 import com.devsatish.produck.ui.theme.secondColor
 import com.devsatish.produck.ui.theme.themeColor
-import com.devsatish.produck.ui.viewmodel.TimerViewModel
+import com.devsatish.produck.ui.viewmodel.timerviewmodel.TimerViewModel
+import com.devsatish.produck.utils.navigation.BottomNavItems
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(timerViewModel: TimerViewModel) {
+fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
 
     var selectedMinutes by remember { mutableIntStateOf(25) }
 
@@ -352,6 +354,13 @@ fun HomeScreen(timerViewModel: TimerViewModel) {
                                     .padding(12.dp)
                                     .shadow(4.dp, RoundedCornerShape(18.dp))
                                     .background(Color.White, RoundedCornerShape(18.dp))
+                                    .clickable {
+                                        navController.navigate(BottomNavItems.Timer.route) {
+                                            popUpTo(BottomNavItems.Home.route) { saveState = true }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
                                     .border(
                                         1.dp, Color(0xFFE0E0E0),
                                         RoundedCornerShape(18.dp)

@@ -1,4 +1,4 @@
-package com.devsatish.produck.ui.viewmodel
+package com.devsatish.produck.ui.viewmodel.routineviewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
