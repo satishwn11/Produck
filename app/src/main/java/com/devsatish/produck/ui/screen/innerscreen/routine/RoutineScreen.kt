@@ -23,7 +23,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -35,10 +34,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -58,7 +56,6 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
     val focusManager = LocalFocusManager.current
 
     // data store variables
-    val context = LocalContext.current
     var goalText by remember { mutableStateOf("") }
 
     val goal by viewModel.goal.collectAsStateWithLifecycle()
@@ -93,7 +90,9 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowDown,
                                 contentDescription = null,
-                                modifier = Modifier.size(30.dp)
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .rotate(180f)
                             )
                         } else {
                             Icon(
@@ -116,58 +115,26 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
         ) {
 
             if (showInput) {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    OutlinedTextField(
-                        value = startTime,
-                        onValueChange = {
-                            startTime = it
-                        },
-                        textStyle = TextStyle(
-                            fontSize = 20.sp
-                        ),
-                        placeholder = {
-                            Text(
-                                "Start Timer",
-                                fontSize = 20.sp
-                            )
-                        },
-                        modifier = Modifier.weight(1f)
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    RoutineTextField(
+                        startTime, onValueChange = { startTime = it },
+                        text = "Start Time", modifier = Modifier.weight(1f)
                     )
 
                     Spacer(modifier = Modifier.width(4.dp))
 
-                    OutlinedTextField(
-                        value = endTime,
-                        onValueChange = {
-                            endTime = it
-                        },
-                        textStyle = TextStyle(
-                            fontSize = 20.sp
-                        ),
-                        placeholder = {
-                            Text(
-                                "End Time",
-                                fontSize = 20.sp
-                            )
-                        },
-                        modifier = Modifier.weight(1f)
+                    RoutineTextField(
+                        endTime, onValueChange = { endTime = it },
+                        text = "End Time", modifier = Modifier.weight(1f)
                     )
                 }
 
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = {
-                        title = it
-                    },
-                    label = {
-                        Text("Task")
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
                 Spacer(modifier = Modifier.height(10.dp))
+
+                RoutineTextField(
+                    title, onValueChange = { title = it },
+                    text = "Task", modifier = Modifier.fillMaxWidth()
+                )
 
                 if (id == 0) {
                     Button(
