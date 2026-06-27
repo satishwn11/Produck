@@ -82,7 +82,7 @@ fun MainScreen(
         drawerState = drawerState,
 
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(drawerShape = RectangleShape) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
