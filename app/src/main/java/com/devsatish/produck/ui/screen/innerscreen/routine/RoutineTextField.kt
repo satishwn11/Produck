@@ -9,12 +9,12 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun RoutineTextField(
-    startTime: String,
+    title: String,
     onValueChange: (String) -> Unit,
     text : String,
     modifier: Modifier = Modifier
 ) {
-    OutlinedTextField(value = startTime, onValueChange = onValueChange,
+    OutlinedTextField(value = title, onValueChange = onValueChange,
         textStyle = TextStyle(fontSize = 20.sp),
         placeholder = { Text( text, fontSize = 20.sp) },
         modifier = modifier

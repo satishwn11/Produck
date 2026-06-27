@@ -83,9 +83,7 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
                     )
                 },
                 actions = {
-                    IconButton(onClick = {
-                        showInput = !showInput
-                    }) {
+                    IconButton(onClick = { showInput = !showInput }) {
                         if (showInput) {
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowDown,
@@ -120,7 +118,6 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
                         startTime, onValueChange = { startTime = it },
                         text = "Start Time", modifier = Modifier.weight(1f)
                     )
-
                     Spacer(modifier = Modifier.width(4.dp))
 
                     RoutineTextField(
@@ -137,7 +134,7 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
                 )
 
                 if (id == 0) {
-                    Button(
+                    RoutineButton(
                         onClick = {
                             focusManager.clearFocus()
 
@@ -148,28 +145,25 @@ fun RoutineScreen(viewModel: RoutineViewModel) {
                             )
 
                             title = ""
-                        }
-                    ) {
-                        Text("Save Routine")
-                    }
+                        },
+                        title = "Save Routine"
+                    )
                 } else {
-                    Button(onClick = {
-                        focusManager.clearFocus()
+                    RoutineButton(
+                        onClick = {
+                            focusManager.clearFocus()
 
-                        viewModel.updateItem(
-                            RoutineEntity(
-                                id = id,
-                                startTime = startTime,
-                                endTime = endTime,
-                                title = title
+                            viewModel.updateItem(
+                                RoutineEntity(
+                                    id = id,
+                                    startTime = startTime, endTime = endTime, title = title
+                                )
                             )
-                        )
-
-                        title = ""
-                        id = 0
-                    }) {
-                        Text("Update Item")
-                    }
+                            title = ""
+                            id = 0
+                        },
+                        title = "Update Item"
+                    )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
             }
